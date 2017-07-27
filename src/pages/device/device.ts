@@ -43,7 +43,6 @@ export class DevicePage {
 
     hideLoader() {
         this.loader.dismiss();
-        //        this.loader.dismisAll();
     }
 
     validateFrequency(frequency: number): boolean {
@@ -138,8 +137,8 @@ export class DevicePage {
                 this.state = STATES.VALIDATED;
                 this.version = data.substring(9, data.length);
                 this.requestData();
-            } else {
-                this.showToast("unknown data: " + data);
+//            } else {
+//                this.showToast("unknown data: " + data);
             }
         } else if (this.isValidated()) {
             if (data.startsWith("CONFIG: ")) {
@@ -148,8 +147,8 @@ export class DevicePage {
                 this.hideLoader();
             } else if (data.startsWith("RSSI: ")) {
                 this.rssi = Number(data.substring(6, data.length));
-            } else {
-                this.showToast("unknown data: " + data);
+//            } else {
+//                this.showToast("unknown data: " + data);
             }
         } else if (this.isWaitingForSave()) {
             this.state = STATES.VALIDATED;
@@ -163,11 +162,11 @@ export class DevicePage {
                 } else {
                     this.showToast("Cannot save to device!");
                 }
-            } else {
-                this.showToast("unknown data: " + data);
+//            } else {
+//                this.showToast("unknown data: " + data);
             }
-        } else {
-            console.log("unknown state: " + data);
+//        } else {
+//            console.log("unknown state: " + data);
         }
     }
 

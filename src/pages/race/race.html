@@ -14,5 +14,10 @@
 
 <ion-content padding>
 
-    <p>State: {{state}}</p>
+    <p>State: {{raceStateText}}</p>
+    <p>Last lap time: {{convertTime(lastLapTime)}}</p>
+    <p>Fastest lap: {{fastestLap}} ({{convertTime(fastestLapTime)}})</p>
+    <p>Average: {{convertTime(averageLapTime)}}</p>
+    <p>Lap times:</p>
+    <p *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}}</p>
 </ion-content>

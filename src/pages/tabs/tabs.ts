@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import { BluetoothPage } from '../bluetooth/bluetooth';
 import { SettingsPage } from '../settings/settings';
 import { HomePage } from '../home/home';
 import { RacePage } from '../race/race';
