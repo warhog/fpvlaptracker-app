@@ -20,7 +20,7 @@ export class FpvlaptrackerApp {
             splashScreen.hide();
 
             smartAudio.preload('lap', 'assets/audio/lap.mp3');
-            smartAudio.preload('finish', 'assets/audio/finish.mp3');
+            smartAudio.preload('finished', 'assets/audio/finished.mp3');
 
         });
     }
