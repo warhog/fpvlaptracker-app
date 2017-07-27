@@ -5,6 +5,7 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {Storage} from '@ionic/storage';
 import {BluetoothPage} from '../bluetooth/bluetooth';
 import {LoadingController} from 'ionic-angular';
+import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 
 @Component({
     selector: 'page-race',
@@ -18,7 +19,7 @@ export class RacePage {
     private loader: any = null;
     private lastLapTime: number = 0;
     private lapTimes: number[] = [];
-    private currentLap: number = 1;
+    private currentLap: number = 0;
     private maxLaps: number = 10;
     private fastestLap: number = 1;
     private fastestLapTime: number = 0;
@@ -48,7 +49,7 @@ export class RacePage {
         }
     }
 
-    constructor(private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private bluetoothSerial: BluetoothSerial) {
+    constructor(private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private bluetoothSerial: BluetoothSerial, private smartAudio: SmartAudioProvider) {
         this.restartRace();
         this.setRaceState(RACESTATE.STOP);
     }
@@ -113,16 +114,19 @@ export class RacePage {
     }
 
     onReceive(data: string) {
-        if (data.startsWith("LAP: ") && (this.isRaceRunning() || this.isRaceWaiting())) {
-            if (this.currentLap == this.maxLaps) {
-                this.showToast("Race ended, max. number of laps reached");
-                this.setRaceState(RACESTATE.STOP);
-            } else {
+        if (data.startsWith("LAP: ")) {
+            if (this.isRaceWaiting()) {
+                this.currentLap++;
+            } else if (this.isRaceRunning()) {
+                if (this.currentLap == this.maxLaps) {
+                    this.smartAudio.play('finish');
+                    this.showToast("Race ended, max. number of laps reached");
+                    this.setRaceState(RACESTATE.STOP);
+                }
                 this.setRaceState(RACESTATE.RUNNING);
                 let lapTime: string = data.substring(5);
                 this.lastLapTime = Number(lapTime);
                 this.lapTimes.push(this.lastLapTime);
-                this.currentLap++;
 
                 let fastestLap = 0;
                 let fastestLapTime = 99999999;
@@ -138,7 +142,10 @@ export class RacePage {
                 this.averageLapTime = avgLapTime;
                 this.fastestLap = fastestLap;
                 this.fastestLapTime = fastestLapTime;
+                this.smartAudio.play('lap');
+                this.currentLap++;
             }
+
         }
     }
 

@@ -15,6 +15,8 @@ import {SplashScreen} from '@ionic-native/splash-screen';
 
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {IonicStorageModule} from '@ionic/storage';
+import {SmartAudioProvider} from '../providers/smart-audio/smart-audio';
+import {NativeAudio} from '@ionic-native/native-audio';
 
 @NgModule({
     declarations: [
@@ -45,7 +47,9 @@ import {IonicStorageModule} from '@ionic/storage';
         StatusBar,
         SplashScreen,
         BluetoothSerial,
-        {provide: ErrorHandler, useClass: IonicErrorHandler}
+        {provide: ErrorHandler, useClass: IonicErrorHandler},
+        NativeAudio,
+        SmartAudioProvider
     ]
 })
 export class AppModule {}
