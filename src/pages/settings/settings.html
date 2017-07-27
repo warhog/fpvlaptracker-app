@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            Settings
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+
+        <ion-list-header>Current Bluetooth device: {{bluetoothDevice}}</ion-list-header>
+        <ion-item>
+            <button ion-button icon-left (click)="gotoBluetoothSelection()">
+                    <ion-icon name="bluetooth"></ion-icon> 
+                Select bluetooth device
+            </button>
+        </ion-item>
+
+    </ion-list>
+</ion-content>

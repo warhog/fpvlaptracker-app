@@ -1,0 +1,80 @@
+<ion-header>
+    <ion-navbar color="red">
+        <ion-title>
+            Device {{deviceName}}
+        </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-left (click)="requestData()">
+                    <ion-icon name="refresh"></ion-icon> 
+                Reload
+            </button>
+            <button ion-button icon-left (click)="saveData()">
+                    <ion-icon name="checkmark"></ion-icon> 
+                Save
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+    <h2>WiFi</h2>
+    <p><b>Only non standalone mode!</b><br />The WiFi network this tracker unit is connecting to.</p>
+    <ion-list>
+        <ion-item>
+            <ion-label stacked>SSID</ion-label>
+            <ion-input type="text" value="" [(ngModel)]="data.ssid"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked>Password</ion-label>
+            <ion-input type="password" [(ngModel)]="data.password"></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <h2>Receiver</h2>
+    <p>The frequency this tracker unit is listening on, must be between 5362 and 5945 MHz.</p>
+    <ion-list>
+        <ion-item>
+            <ion-label stacked>Frequency</ion-label>
+            <ion-input type="number" min="5362" max="5945" step="1" value="" [(ngModel)]="data.frequency"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label stacked>RSSI</ion-label>
+            <ion-input type="number" disabled value="" [(ngModel)]="rssi"></ion-input>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-left (click)="requestRssi()">
+                    <ion-icon name="wifi"></ion-icon> 
+                Get RSSI
+            </button>
+        </ion-item>
+    </ion-list>
+
+    <h2>Lap detection</h2>
+    <p>The duration of the lap detection lock in milliseconds.</p>
+    <ion-list>
+        <ion-item>
+            <ion-label stacked>Minimum lap time</ion-label>
+            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="data.minimumLapTime"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked>RSSI threshold low limit</ion-label>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="data.thresholdLow"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked>RSSI threshold high limit</ion-label>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="data.thresholdHigh"></ion-input>
+        </ion-item>
+    </ion-list>
+
+    <h2>Misc</h2>
+    <button ion-button icon-left (click)="reboot()">
+            <ion-icon name="build"></ion-icon> 
+        Reboot unit
+    </button>
+
+</ion-content>
