@@ -21,15 +21,21 @@ export class RacePage {
     private lastLapTime: number = 0;
     private lapTimes: number[] = [];
     private currentLap: number = 0;
-    private maxLaps: number = 3;
+    private maxLaps: number = 10;
     private fastestLap: number = 1;
     private fastestLapTime: number = 0;
     private averageLapTime: number = 0;
+    private totalTime: number = 0;
 
     restartRace() {
         this.setRaceState(RACESTATE.WAITING);
         this.lapTimes = [];
         this.currentLap = 1;
+        this.fastestLap = 1;
+        this.fastestLapTime = 0;
+        this.averageLapTime = 0;
+        this.totalTime = 0;
+        this.lastLapTime = 0;
     }
 
     setRaceState(state: RACESTATE) {
@@ -131,16 +137,16 @@ export class RacePage {
 
                 let fastestLap = 0;
                 let fastestLapTime = 99999999;
-                let avgLapTime = 0;
+                let totalTime = 0;
                 this.lapTimes.forEach(function (lap, index) {
                     if (lap < fastestLapTime) {
                         fastestLapTime = lap;
                         fastestLap = index + 1;
                     }
-                    avgLapTime += lap;
+                    totalTime += lap;
                 });
-                avgLapTime = avgLapTime / this.lapTimes.length;
-                this.averageLapTime = avgLapTime;
+                this.totalTime = totalTime;
+                this.averageLapTime = totalTime / this.lapTimes.length;
                 this.fastestLap = fastestLap;
                 this.fastestLapTime = fastestLapTime;
                 if (this.isRaceRunning()) {

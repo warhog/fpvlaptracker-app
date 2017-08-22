@@ -14,10 +14,62 @@
 
 <ion-content padding>
 
-    <p>State: {{raceStateText}}</p>
-    <p>Last lap time: {{convertTime(lastLapTime)}}</p>
-    <p>Fastest lap: {{fastestLap}} ({{convertTime(fastestLapTime)}})</p>
-    <p>Average: {{convertTime(averageLapTime)}}</p>
-    <p>Lap times:</p>
-    <p *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}}</p>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                State:
+            </ion-col>
+            <ion-col>
+                {{raceStateText}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                Last lap time:
+            </ion-col>
+            <ion-col>
+                {{convertTime(lastLapTime)}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                Fastest lap:
+            </ion-col>
+            <ion-col>
+                {{fastestLap}} ({{convertTime(fastestLapTime)}})
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                Average lap time:
+            </ion-col>
+            <ion-col>
+                {{convertTime(averageLapTime)}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                Total time:
+            </ion-col>
+            <ion-col>
+                {{convertTime(totalTime)}}
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                Lap times:
+            </ion-col>
+            <ion-col>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <p *ngIf="currentLap > 0">not finished a lap yet</p>
+                <p *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}}</p>
+            </ion-col>
+            <ion-col>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
 </ion-content>
