@@ -46,17 +46,15 @@ export class DevicePage {
     }
 
     validateFrequency(frequency: number): boolean {
-        // TODO fix this
-        return true;
-//        let frequencies: number[] = [
-//            5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725, // Band A
-//            5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866, // Band B
-//            5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945, // Band E
-//            5740, 5760, 5780, 5800, 5820, 5840, 5860, 5880, // Band F / Airwave
-//            5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917, // Band C / Immersion Raceband
-//            5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621  // Band D / 5.3
-//        ];
-//        return frequencies.indexOf(frequency) > -1;
+        let frequencies: number[] = [
+            5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725, // Band A
+            5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866, // Band B
+            5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945, // Band E
+            5740, 5760, 5780, 5800, 5820, 5840, 5860, 5880, // Band F / Airwave
+            5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917, // Band C / Immersion Raceband
+            5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621  // Band D / 5.3
+        ];
+        return frequencies.indexOf(frequency) > -1;
     }
 
     reboot() {
@@ -72,7 +70,7 @@ export class DevicePage {
     }
 
     saveData() {
-        if (!this.validateFrequency(this.data.frequency)) {
+        if (!this.validateFrequency(Number(this.data.frequency))) {
             this.showToast("Invalid frequency!");
             this.requestData();
             return;
