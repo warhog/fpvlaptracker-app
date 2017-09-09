@@ -12,3 +12,8 @@ currently there is no ios application available due to the lack of an iphone/mac
 to build the app you have to install ionic 3 and cordova frameworks ([see ionic docs](http://ionicframework.com/docs/intro/installation/)).
 
 there's a build script `build_release.sh` that builds the android release.
+
+# privacy
+the application is not storing any information except the tracker unit id.
+
+non of your private data is sent out or stored.
