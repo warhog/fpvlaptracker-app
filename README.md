@@ -1,26 +1,19 @@
-This is a starter template for [Ionic](http://ionicframework.com/docs/) projects.
+# fpvlaptracker mobile application
+this is the repository for the fpvlaptracker mobile application.
 
-## How to use this template
+informations about the fpvlaptracker project can be found [here](https://github.com/warhog/fpvlaptracker).
 
-*This template does not work on its own*. The shared files for each starter are found in the [ionic2-app-base repo](https://github.com/ionic-team/ionic2-app-base).
+# download
+the application is found in the google play store (TODO links).
 
-To use this template, either create a new ionic project using the ionic node.js utility, or copy the files from this repository into the [Starter App Base](https://github.com/ionic-team/ionic2-app-base).
+currently there is no ios application available due to the lack of an iphone/mac.
 
-### With the Ionic CLI:
+# build instructions
+to build the app you have to install ionic 3 and cordova frameworks ([see ionic docs](http://ionicframework.com/docs/intro/installation/)).
 
-Take the name after `ionic2-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
+there's a build script `build_release.sh` that builds the android release.
 
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start myTabs tabs
-```
+# privacy
+the application is not storing any information except the tracker unit id.
 
-Then, to run it, cd into `myTabs` and run:
-
-```bash
-$ ionic cordova platform add ios
-$ ionic cordova run ios
-```
-
-Substitute ios for android if not on a Mac.
-
+non of your private data is sent out or stored.
