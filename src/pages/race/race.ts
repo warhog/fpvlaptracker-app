@@ -7,6 +7,7 @@ import {BluetoothPage} from '../bluetooth/bluetooth';
 import {LoadingController} from 'ionic-angular';
 import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
+import {Insomnia} from '@ionic-native/insomnia';
 
 @Component({
     selector: 'page-race',
@@ -29,8 +30,16 @@ export class RacePage {
 
     restartRace() {
         this.setRaceState(RACESTATE.WAITING);
+
+        this.storage.get("race.numberOfLaps").then((numberOfLaps: number) => {
+            if (numberOfLaps == undefined || numberOfLaps == null) {
+                numberOfLaps = 10;
+            }
+            this.maxLaps = numberOfLaps;
+        });
+
         this.lapTimes = [];
-        this.currentLap = 1;
+        this.currentLap = 0;
         this.fastestLap = 1;
         this.fastestLapTime = 0;
         this.averageLapTime = 0;
@@ -56,7 +65,7 @@ export class RacePage {
         }
     }
 
-    constructor(public zone: NgZone, private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private bluetoothSerial: BluetoothSerial, private smartAudio: SmartAudioProvider) {
+    constructor(public zone: NgZone, private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private bluetoothSerial: BluetoothSerial, private smartAudio: SmartAudioProvider, private insomnia: Insomnia) {
         this.restartRace();
         this.setRaceState(RACESTATE.STOP);
     }
@@ -123,10 +132,11 @@ export class RacePage {
     onReceive(data: string) {
         if (data.startsWith("LAP: ")) {
             if (this.isRaceWaiting()) {
+                this.smartAudio.play('lap');
                 this.currentLap++;
                 this.setRaceState(RACESTATE.RUNNING);
             } else if (this.isRaceRunning()) {
-                if (this.currentLap >= (this.maxLaps + 1)) {
+                if (this.currentLap >= this.maxLaps) {
                     this.smartAudio.play('finished');
                     this.showToast("Race ended, max. number of laps reached");
                     this.setRaceState(RACESTATE.STOP);
@@ -146,7 +156,7 @@ export class RacePage {
                     totalTime += lap;
                 });
                 this.totalTime = totalTime;
-                this.averageLapTime = totalTime / this.lapTimes.length;
+                this.averageLapTime = Number(totalTime / this.lapTimes.length);
                 this.fastestLap = fastestLap;
                 this.fastestLapTime = fastestLapTime;
                 if (this.isRaceRunning()) {
@@ -205,10 +215,29 @@ export class RacePage {
 
     ionViewDidEnter() {
         this.doConnect();
+
+        this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
+            if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
+                keepAwakeDuringRace = false;
+            }
+            if (keepAwakeDuringRace) {
+                this.insomnia.keepAwake().then(() => {}, () => {
+                    this.showToast("cannot disable sleep mode");
+                });
+            }
+        });
     }
 
     ionViewWillLeave() {
         this.disconnect();
+        this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
+            if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
+                keepAwakeDuringRace = false;
+            }
+            if (keepAwakeDuringRace) {
+                this.insomnia.allowSleepAgain();
+            }
+        });
     }
 
     disconnect() {

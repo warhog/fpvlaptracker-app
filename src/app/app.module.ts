@@ -17,6 +17,7 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {IonicStorageModule} from '@ionic/storage';
 import {SmartAudioProvider} from '../providers/smart-audio/smart-audio';
 import {NativeAudio} from '@ionic-native/native-audio';
+import {Insomnia} from '@ionic-native/insomnia';
 
 @NgModule({
     declarations: [
@@ -49,7 +50,8 @@ import {NativeAudio} from '@ionic-native/native-audio';
         BluetoothSerial,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
         NativeAudio,
-        SmartAudioProvider
+        SmartAudioProvider,
+        Insomnia
     ]
 })
 export class AppModule {}

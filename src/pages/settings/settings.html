@@ -3,6 +3,12 @@
         <ion-title>
             Settings
         </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-left (click)="saveValues()">
+                    <ion-icon name="checkmark"></ion-icon> 
+                Save
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
@@ -15,6 +21,16 @@
                     <ion-icon name="bluetooth"></ion-icon> 
                 Select bluetooth device
             </button>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked color="primary">Number of laps</ion-label>
+            <ion-input type="number" [(ngModel)]="numberOfLaps" placeholder="laps"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Keep awake during race</ion-label>
+            <ion-checkbox [(ngModel)]="keepAwakeDuringRace"></ion-checkbox>
         </ion-item>
 
     </ion-list>
