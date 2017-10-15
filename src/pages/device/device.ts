@@ -22,7 +22,8 @@ export class DevicePage {
         "frequency": 0,
         "minimumLapTime": 0,
         "thresholdLow": 0,
-        "thresholdHigh": 0
+        "thresholdHigh": 0,
+        "offset": 0
     };
     private version: string = "";
     private state: number = STATES.DISCONNECTED;

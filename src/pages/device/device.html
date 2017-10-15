@@ -50,6 +50,13 @@
                 Get RSSI
             </button>
         </ion-item>
+
+        <ion-item>
+            <h3>RSSI offset</h3>
+            <p>The RSSI offset for the signal.</p>
+            <ion-label stacked>Offset</ion-label>
+            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="data.offset"></ion-input>
+        </ion-item>
     </ion-list>
 
     <h2>Lap detection</h2>
