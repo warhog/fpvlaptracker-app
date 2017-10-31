@@ -1,0 +1,19 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            Channel Scanner
+        </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-left (click)="scanChannels()">
+                    <ion-icon name="refresh"></ion-icon> 
+                Scan
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <p>Got maximum RSSI ({{maxRssi}}) on frequency {{maxFreq}} MHz.</p>
+    <p *ngFor="let channel of channels">{{channel.freq}} MHz: {{channel.rssi}}</p>
+    <p [hidden]="channels.length > 0">Press Scan to start channel scan!</p>
+</ion-content>

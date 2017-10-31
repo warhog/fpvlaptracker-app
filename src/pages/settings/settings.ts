@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
 import {BluetoothPage} from '../bluetooth/bluetooth';
+import {ScannerPage} from '../scanner/scanner';
 
 @Component({
     selector: 'page-settings',
@@ -33,6 +34,10 @@ export class SettingsPage {
 
     gotoBluetoothSelection() {
         this.navCtrl.push(BluetoothPage);
+    }
+
+    gotoScanner() {
+        this.navCtrl.push(ScannerPage);
     }
 
     saveValues() {

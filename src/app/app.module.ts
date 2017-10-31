@@ -5,6 +5,7 @@ import {FpvlaptrackerApp} from './app.component';
 
 import {BluetoothPage} from '../pages/bluetooth/bluetooth';
 import {SettingsPage} from '../pages/settings/settings';
+import {ScannerPage} from '../pages/scanner/scanner';
 import {RacePage} from '../pages/race/race';
 import {DevicePage} from '../pages/device/device';
 import {HomePage} from '../pages/home/home';
@@ -24,6 +25,7 @@ import {Insomnia} from '@ionic-native/insomnia';
         FpvlaptrackerApp,
         BluetoothPage,
         SettingsPage,
+        ScannerPage,
         DevicePage,
         RacePage,
         HomePage,
@@ -39,6 +41,7 @@ import {Insomnia} from '@ionic-native/insomnia';
         FpvlaptrackerApp,
         BluetoothPage,
         SettingsPage,
+        ScannerPage,
         DevicePage,
         RacePage,
         HomePage,

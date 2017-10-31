@@ -103,7 +103,7 @@ export class RacePage {
         }
         let minutesString: string = minutes.toFixed(0);
         let secondsString: string = seconds.toFixed(0)
-        let millisecondsString: string = milliseconds.toString();
+        let millisecondsString: string = milliseconds.toFixed(0);
         if (milliseconds <= 99) {
             millisecondsString = "0" + millisecondsString;
         }
@@ -156,7 +156,7 @@ export class RacePage {
                     totalTime += lap;
                 });
                 this.totalTime = totalTime;
-                this.averageLapTime = Number(totalTime / this.lapTimes.length);
+                this.averageLapTime = Number(totalTime) / this.lapTimes.length;
                 this.fastestLap = fastestLap;
                 this.fastestLapTime = fastestLapTime;
                 if (this.isRaceRunning()) {
