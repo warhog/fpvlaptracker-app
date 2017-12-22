@@ -1,12 +1,10 @@
 import {Component} from '@angular/core';
 import {NavController} from 'ionic-angular';
-import {ToastController} from 'ionic-angular';
-import {NavParams} from 'ionic-angular';
-import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
-import {LoadingController} from 'ionic-angular';
 import {BluetoothPage} from '../bluetooth/bluetooth';
 import {HomePage} from '../home/home';
 import {Storage} from '@ionic/storage';
+import {FltutilProvider} from '../../providers/fltutil/fltutil'
+import {FltunitProvider} from '../../providers/fltunit/fltunit'
 
 @Component({
     selector: 'page-device',
@@ -15,38 +13,20 @@ import {Storage} from '@ionic/storage';
 
 export class DevicePage {
 
-    private deviceName: string = "";
-    private data = {
-        "ssid": "",
-        "password": "",
-        "frequency": 0,
-        "minimumLapTime": 0,
-        "thresholdLow": 0,
-        "thresholdHigh": 0,
-        "offset": 0
-    };
-    private version: string = "";
-    private state: number = STATES.DISCONNECTED;
     private rssi: number = 0;
-    private loader: any = null;
+    private deviceName: string = "";
+    private ssid: string = "";
+    private password: string = "";
+    private frequency: number = 0;
+    private minimumLapTime: number = 0;
+    private thresholdLow: number = 0;
+    private thresholdHigh: number = 0;
+    private offset: number = 0;
 
-    constructor(public storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private navParams: NavParams, private bluetoothSerial: BluetoothSerial) {
-        //        let id = navParams.get('id');
-        //        let name = navParams.get('name');
+    constructor(public storage: Storage, public navCtrl: NavController, private fltutil: FltutilProvider, private fltunit: FltunitProvider) {
     }
 
-    showLoader(text: string) {
-        this.loader = this.loadingCtrl.create({
-            content: text
-        });
-        this.loader.present();
-    }
-
-    hideLoader() {
-        this.loader.dismiss();
-    }
-
-    validateFrequency(frequency: number): boolean {
+    getFrequencyTable(): number[] {
         let frequencies: number[] = [
             5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725, // Band A
             5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866, // Band B
@@ -55,43 +35,47 @@ export class DevicePage {
             5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917, // Band C / Immersion Raceband
             5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621  // Band D / 5.3
         ];
+        return frequencies;
+    }
+
+    getFrequencyNameTable(): string[] {
+        let frequencyNameTable: string[] = [
+            "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", // Band A
+            "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", // Band B
+            "E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", // Band E
+            "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", // Band F
+            "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", // Band C / Immersion Raceband
+            "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", // Band D / 5.3
+        ];
+        return frequencyNameTable;
+    }
+
+    validateFrequency(frequency: number): boolean {
+        let frequencies: number[] = this.getFrequencyTable();
         return frequencies.indexOf(frequency) > -1;
     }
 
+    getFrequencyName(frequency: number): string {
+        let frequencies: number[] = this.getFrequencyTable();
+        let frequencyNameTable: string[] = this.getFrequencyNameTable();
+        let index = frequencies.indexOf(frequency);
+        if (index >= 0) {
+            return frequencyNameTable[index];
+        }
+        return "unknown";
+    }
+
     reboot() {
-        let me = this;
-        this.bluetoothSerial.write("REBOOT\n")
-            .then(function () {
-                me.showToast("Rebooting unit, this may take up to 1 minute, press activate standalone mode button if required!");
-                me.goBack();
-            })
-            .catch(function (errMsg) {
-                me.showToast("Cannot reboot unit: " + errMsg);
-            });
+        this.fltunit.reboot();
     }
 
     saveData() {
-        if (!this.validateFrequency(Number(this.data.frequency))) {
-            this.showToast("Invalid frequency!");
+        if (!this.validateFrequency(this.frequency)) {
+            this.fltutil.showToast("Invalid frequency!");
             this.requestData();
             return;
         }
-
-        let me = this;
-        this.state = STATES.CHECK_SAVE_SUCCESS;
-        this.bluetoothSerial.write("PUT config " + JSON.stringify(this.data) + "\n")
-            .catch(function (msg) {
-                me.showToast("Cannot save: " + msg);
-                this.state = STATES.VALIDATED;
-            });
-    }
-
-    showToast(errMsg: string) {
-        let toast = this.toastCtrl.create({
-            message: errMsg,
-            duration: 5000
-        });
-        toast.present();
+        this.fltunit.saveData(this.ssid, this.password, this.frequency, this.minimumLapTime, this.thresholdLow, this.thresholdHigh, this.offset);
     }
 
     goBack() {
@@ -101,97 +85,20 @@ export class DevicePage {
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
     }
-
-    isWaitingForValidTest(): boolean {
-        return this.state == STATES.VALID_TEST;
-    }
-
-    isValidated(): boolean {
-        return this.state == STATES.VALIDATED;
-    }
-
-    isWaitingForSave(): boolean {
-        return this.state == STATES.CHECK_SAVE_SUCCESS;
-    }
-
+    
     requestData() {
-        this.showLoader("Loading configuration...");
+        this.fltutil.showLoader("Loading configuration...");
         let me = this;
-        this.bluetoothSerial.write("GET config\n")
-            .catch(function (msg: string) {
-                me.showToast("Cannot get configuration: " + msg);
-            });
+        this.fltunit.loadConfigData().catch(function (msg: string) {
+            me.fltutil.hideLoader();
+            me.fltutil.showToast("Cannot get configuration: " + msg);
+        });
     }
 
     requestRssi() {
         let me = this;
-        this.bluetoothSerial.write("GET rssi\n")
-            .catch(function (msg: string) {
-                me.showToast("Cannot get rssi: " + msg);
-            });
-    }
-
-    onReceive(data: string) {
-        if (this.isWaitingForValidTest()) {
-            this.state = STATES.VALID_TEST;
-            if (data.startsWith("VERSION: ")) {
-                this.state = STATES.VALIDATED;
-                this.version = data.substring(9, data.length);
-                this.requestData();
-//            } else {
-//                this.showToast("unknown data: " + data);
-            }
-        } else if (this.isValidated()) {
-            if (data.startsWith("CONFIG: ")) {
-                this.data = JSON.parse(data.substring(8, data.length));
-                this.requestRssi();
-                this.hideLoader();
-            } else if (data.startsWith("RSSI: ")) {
-                this.rssi = Number(data.substring(6, data.length));
-//            } else {
-//                this.showToast("unknown data: " + data);
-            }
-        } else if (this.isWaitingForSave()) {
-            this.state = STATES.VALIDATED;
-            this.hideLoader();
-            if (data.startsWith("SETCONFIG: ")) {
-                let result: string = data.substring(11);
-                if (result.trim() == "OK") {
-                    this.showToast("Successfully saved");
-                    this.requestData();
-                    this.goBack();
-                } else {
-                    this.showToast("Cannot save to device!");
-                }
-//            } else {
-//                this.showToast("unknown data: " + data);
-            }
-//        } else {
-//            console.log("unknown state: " + data);
-        }
-    }
-
-    connect(id: string, name: string) {
-
-        return new Promise((resolve, reject) => {
-            this.showLoader("Connecting to " + name + ", please wait...");
-
-            this.bluetoothSerial.connect(id).subscribe((data) => {
-                this.hideLoader();
-                this.state = STATES.CONNECTED;
-                this.bluetoothSerial.subscribe("\n").subscribe((data) => {
-                    this.onReceive(data);
-                }, (errMsg) => {
-                    this.showToast(errMsg);
-                    this.disconnect();
-                });
-                this.checkValidDevice();
-                resolve();
-            }, (errMsg) => {
-                this.hideLoader();
-                this.disconnect();
-                reject(errMsg);
-            });
+        this.fltunit.loadRssi().catch(function (msg: string) {
+            me.fltutil.showToast("Cannot get rssi: " + msg);
         });
     }
 
@@ -200,13 +107,13 @@ export class DevicePage {
         this.storage.get("bluetooth.id").then((id: string) => {
             this.storage.get("bluetooth.name").then((name: string) => {
                 this.deviceName = name;
-                this.connect(id, name)
+                this.fltunit.connect(id, name)
                     .then(function () {
 
                     })
                     .catch(function (errMsg: string) {
-                        me.disconnect();
-                        me.showToast(errMsg);
+                        me.fltunit.disconnect();
+                        me.fltutil.showToast(errMsg);
                         me.gotoSettings();
                     });
             }).catch(() => {
@@ -217,36 +124,37 @@ export class DevicePage {
         });
     }
 
+    handleConfigData(data: any) {
+        this.ssid = data.ssid;
+        this.password = data.password;
+        this.frequency = data.frequency;
+        this.minimumLapTime = data.minimumLapTime;
+        this.thresholdLow = data.thresholdLow;
+        this.thresholdHigh = data.thresholdHigh;
+        this.offset = data.offset;
+    }
+
+    subscribe() {
+        let me = this;
+        this.fltunit.getObservable().subscribe(data => {
+            me.fltutil.hideLoader();
+            if (data.type == "message") {
+                me.fltutil.showToast(data.message);
+            } else if (data.type == "newRssiValue") {
+                me.rssi = data.rssi;
+            } else if (data.type == "newConfigData") {
+                me.handleConfigData(data);
+            }
+        });
+    }
+
     ionViewDidEnter() {
         this.doConnect();
+        this.subscribe();
     }
 
     ionViewWillLeave() {
-        this.disconnect();
-    }
-
-    disconnect() {
-        this.state = STATES.DISCONNECTED;
-        this.bluetoothSerial.disconnect();
-    }
-
-    checkValidDevice() {
-        let me = this;
-        this.state = STATES.VALID_TEST;
-        this.bluetoothSerial.write("GET version\n")
-            .catch(function () {
-                me.showToast("Cannot validate device.");
-                me.disconnect();
-            });
+        this.fltunit.disconnect();
     }
 
 }
-
-enum STATES {
-    DISCONNECTED = 0,
-    CONNECTED,
-    VALID_TEST,
-    VALIDATED,
-    CHECK_SAVE_SUCCESS
-}
-

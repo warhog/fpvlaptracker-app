@@ -53,11 +53,7 @@ export class BluetoothPage {
     }
 
     constructor(private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private bluetoothSerial: BluetoothSerial) {
-
         this.loadBluetoothDevices();
-
-        //        app.setStatus("Looking for Bluetooth Devices...");
-
     }
 
 }

@@ -23,12 +23,12 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>SSID</ion-label>
-            <ion-input type="text" value="" [(ngModel)]="data.ssid"></ion-input>
+            <ion-input type="text" value="" [(ngModel)]="ssid"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>Password</ion-label>
-            <ion-input type="password" [(ngModel)]="data.password"></ion-input>
+            <ion-input type="password" [(ngModel)]="password"></ion-input>
         </ion-item>
 
     </ion-list>
@@ -38,7 +38,7 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>Frequency</ion-label>
-            <ion-input type="number" min="5362" max="5945" step="1" value="" [(ngModel)]="data.frequency"></ion-input>
+            <ion-input type="number" min="5362" max="5945" step="1" value="" [(ngModel)]="frequency"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label stacked>RSSI</ion-label>
@@ -55,7 +55,7 @@
             <h3>RSSI offset</h3>
             <p>The RSSI offset for the signal.</p>
             <ion-label stacked>Offset</ion-label>
-            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="data.offset"></ion-input>
+            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="offset"></ion-input>
         </ion-item>
     </ion-list>
 
@@ -64,17 +64,17 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>Minimum lap time</ion-label>
-            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="data.minimumLapTime"></ion-input>
+            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="minimumLapTime"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>RSSI threshold low limit</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="data.thresholdLow"></ion-input>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="thresholdLow"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>RSSI threshold high limit</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="data.thresholdHigh"></ion-input>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="thresholdHigh"></ion-input>
         </ion-item>
     </ion-list>
 

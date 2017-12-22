@@ -19,6 +19,8 @@ import {IonicStorageModule} from '@ionic/storage';
 import {SmartAudioProvider} from '../providers/smart-audio/smart-audio';
 import {NativeAudio} from '@ionic-native/native-audio';
 import {Insomnia} from '@ionic-native/insomnia';
+import {FltutilProvider} from '../providers/fltutil/fltutil';
+import {FltunitProvider} from '../providers/fltunit/fltunit';
 
 @NgModule({
     declarations: [
@@ -54,7 +56,10 @@ import {Insomnia} from '@ionic-native/insomnia';
         {provide: ErrorHandler, useClass: IonicErrorHandler},
         NativeAudio,
         SmartAudioProvider,
-        Insomnia
+        Insomnia,
+        FltutilProvider,
+        FltunitProvider,
+        FltunitProvider
     ]
 })
 export class AppModule {}
