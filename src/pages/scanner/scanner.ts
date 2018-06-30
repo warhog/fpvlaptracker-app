@@ -12,7 +12,7 @@ import {FltunitProvider} from '../../providers/fltunit/fltunit'
 })
 export class ScannerPage {
 
-    private channelData: any = null;
+//    private channelData: any = null;
     private maxFreq: string = "";
     private maxRssi: number = 0;
     private channels: {freq: number, rssi: number}[] = [];

@@ -56,15 +56,15 @@ export class FltunitProvider {
         this.state = state;
     }
 
-    saveData(ssid: string, password: string, frequency: number, minimumLapTime: number, thresholdLow: number, thresholdHigh: number, offset: number) {
+    saveData(ssid: string, password: string, frequency: number, minimumLapTime: number, triggerThreshold: number, triggerThresholdCalibration: number, calibrationOffset: number) {
         let data = {
             "ssid": ssid,
             "password": password,
             "frequency": frequency,
             "minimumLapTime": minimumLapTime,
-            "thresholdLow": thresholdLow,
-            "thresholdHigh": thresholdHigh,
-            "offset": offset
+            "triggerThreshold": triggerThreshold,
+            "triggerThresholdCalibration": triggerThresholdCalibration,
+            "calibrationOffset": calibrationOffset
         };
         this.setState(FLT_UNIT_STATES.CHECK_SAVE_SUCCESS);
         let me = this;
@@ -139,6 +139,18 @@ export class FltunitProvider {
         });
     }
 
+    loadState() {
+        return new Promise((resolve, reject) => {
+            this.bluetoothSerial.write("GET state\n")
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (msg: string) {
+                    reject(msg);
+                });
+        });
+    }
+
     checkValidDevice() {
         let me = this;
         this.state = FLT_UNIT_STATES.VALID_TEST;
@@ -153,7 +165,7 @@ export class FltunitProvider {
         let me = this;
         this.bluetoothSerial.write("REBOOT\n")
             .then(function () {
-                me.fltutil.showToast("Rebooting unit, this may take up to 1 minute, press activate standalone mode button if required!");
+                me.fltutil.showToast("Rebooting unit, this may take up to 1 minute.");
             })
             .catch(function (errMsg) {
                 me.fltutil.showToast("Cannot reboot unit: " + errMsg);
@@ -171,7 +183,6 @@ export class FltunitProvider {
         } else if (this.isValidated()) {
             if (data.startsWith("CONFIG: ")) {
                 let config: any = JSON.parse(data.substring(8, data.length));
-                this.loadRssi();
                 this.observer.next(
                     {
                         type: "newConfigData",
@@ -179,9 +190,9 @@ export class FltunitProvider {
                         password: config.password,
                         frequency: config.frequency,
                         minimumLapTime: config.minimumLapTime,
-                        thresholdLow: config.thresholdLow,
-                        thresholdHigh: config.thresholdHigh,
-                        offset: config.offset
+                        triggerThreshold: config.triggerThreshold,
+                        triggerThresholdCalibration: config.triggerThresholdCalibration,
+                        calibrationOffset: config.calibrationOffset
                     }
                 );
             } else if (data.startsWith("RSSI: ")) {
@@ -189,6 +200,13 @@ export class FltunitProvider {
                     {
                         type: "newRssiValue",
                         rssi: Number(data.substring(6, data.length))
+                    }
+                );
+            } else if (data.startsWith("STATE: ")) {
+                this.observer.next(
+                    {
+                        type: "newStateValue",
+                        state: data.substring(7, data.length)
                     }
                 );
             } else if (data.startsWith("CHANNELS: ")) {

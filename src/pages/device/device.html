@@ -32,14 +32,67 @@
         </ion-item>
 
     </ion-list>
-
     <h2>Receiver</h2>
-    <p>The frequency this tracker unit is listening on, must be between 5362 and 5945 MHz.</p>
+    <p>The frequency this tracker unit is listening on.</p>
     <ion-list>
         <ion-item>
             <ion-label stacked>Frequency</ion-label>
-            <ion-input type="number" min="5362" max="5945" step="1" value="" [(ngModel)]="frequency"></ion-input>
-        </ion-item>
+            <ion-select [(ngModel)]="frequency" interface="popover">
+              <ion-option value="5865">Band A 1</ion-option>
+              <ion-option value="5845">Band A 2</ion-option>
+              <ion-option value="5825">Band A 3</ion-option>
+              <ion-option value="5805">Band A 4</ion-option>
+              <ion-option value="5785">Band A 5</ion-option>
+              <ion-option value="5765">Band A 6</ion-option>
+              <ion-option value="5745">Band A 7</ion-option>
+              <ion-option value="5725">Band A 8</ion-option>
+
+              <ion-option value="5733">Band B 1</ion-option>
+              <ion-option value="5752">Band B 2</ion-option>
+              <ion-option value="5771">Band B 3</ion-option>
+              <ion-option value="5790">Band B 4</ion-option>
+              <ion-option value="5809">Band B 5</ion-option>
+              <ion-option value="5828">Band B 6</ion-option>
+              <ion-option value="5847">Band B 7</ion-option>
+              <ion-option value="5866">Band B 8</ion-option>
+
+              <ion-option value="5705">Band E 1</ion-option>
+              <ion-option value="5685">Band E 2</ion-option>
+              <ion-option value="5665">Band E 3</ion-option>
+              <ion-option value="5645">Band E 4</ion-option>
+              <ion-option value="5885">Band E 5</ion-option>
+              <ion-option value="5905">Band E 6</ion-option>
+              <ion-option value="5925">Band E 7</ion-option>
+              <ion-option value="5945">Band E 8</ion-option>
+
+              <ion-option value="5740">Band F 1</ion-option>
+              <ion-option value="5760">Band F 2</ion-option>
+              <ion-option value="5780">Band F 3</ion-option>
+              <ion-option value="5800">Band F 4</ion-option>
+              <ion-option value="5820">Band F 5</ion-option>
+              <ion-option value="5840">Band F 6</ion-option>
+              <ion-option value="5860">Band F 7</ion-option>
+              <ion-option value="5880">Band F 8</ion-option>
+
+              <ion-option value="5658">Band R 1</ion-option>
+              <ion-option value="5695">Band R 2</ion-option>
+              <ion-option value="5732">Band R 3</ion-option>
+              <ion-option value="5769">Band R 4</ion-option>
+              <ion-option value="5806">Band R 5</ion-option>
+              <ion-option value="5843">Band R 6</ion-option>
+              <ion-option value="5880">Band R 7</ion-option>
+              <ion-option value="5917">Band R 8</ion-option>
+
+              <ion-option value="5362">Band D 1</ion-option>
+              <ion-option value="5399">Band D 2</ion-option>
+              <ion-option value="5436">Band D 3</ion-option>
+              <ion-option value="5473">Band D 4</ion-option>
+              <ion-option value="5510">Band D 5</ion-option>
+              <ion-option value="5547">Band D 6</ion-option>
+              <ion-option value="5584">Band D 7</ion-option>
+              <ion-option value="5621">Band D 8</ion-option>
+            </ion-select>
+          </ion-item>
         <ion-item>
             <ion-label stacked>RSSI</ion-label>
             <ion-input type="number" disabled value="" [(ngModel)]="rssi"></ion-input>
@@ -47,15 +100,25 @@
         <ion-item>
             <button ion-button icon-left (click)="requestRssi()">
                     <ion-icon name="wifi"></ion-icon> 
-                Get RSSI
+                Update RSSI
+            </button>
+        </ion-item>
+        <ion-item>
+            <ion-label stacked>State</ion-label>
+            <ion-input type="text" disabled value="" [(ngModel)]="state"></ion-input>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-left (click)="requestState()">
+                    <ion-icon name="pulse"></ion-icon> 
+                Update state
             </button>
         </ion-item>
 
         <ion-item>
-            <h3>RSSI offset</h3>
-            <p>The RSSI offset for the signal.</p>
-            <ion-label stacked>Offset</ion-label>
-            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="offset"></ion-input>
+            <h3>RSSI calibration offset</h3>
+            <p>The RSSI offset that is substracted during calibration run. Improves lap detection but can add jitter to lap times.</p>
+            <ion-label stacked>Calibration Offset</ion-label>
+            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="calibrationOffset"></ion-input>
         </ion-item>
     </ion-list>
 
@@ -68,13 +131,14 @@
         </ion-item>
 
         <ion-item>
-            <ion-label stacked>RSSI threshold low limit</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="thresholdLow"></ion-input>
+            <p>The trigger threshold defines the RSSI window in which the lap detection is active.</p>
+            <ion-label stacked>RSSI trigger threshold</ion-label>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="triggerThreshold"></ion-input>
         </ion-item>
 
         <ion-item>
-            <ion-label stacked>RSSI threshold high limit</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="thresholdHigh"></ion-input>
+            <ion-label stacked>RSSI trigger threshold during calibration</ion-label>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="triggerThresholdCalibration"></ion-input>
         </ion-item>
     </ion-list>
 

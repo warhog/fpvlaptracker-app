@@ -5,6 +5,7 @@ import {HomePage} from '../home/home';
 import {Storage} from '@ionic/storage';
 import {FltutilProvider} from '../../providers/fltutil/fltutil'
 import {FltunitProvider} from '../../providers/fltunit/fltunit'
+import {NgZone} from "@angular/core";
 
 @Component({
     selector: 'page-device',
@@ -19,11 +20,18 @@ export class DevicePage {
     private password: string = "";
     private frequency: number = 0;
     private minimumLapTime: number = 0;
-    private thresholdLow: number = 0;
-    private thresholdHigh: number = 0;
-    private offset: number = 0;
+    private triggerThreshold: number = 0;
+    private triggerThresholdCalibration: number = 0;
+    private calibrationOffset: number = 0;
+    private state: string = "";
 
-    constructor(public storage: Storage, public navCtrl: NavController, private fltutil: FltutilProvider, private fltunit: FltunitProvider) {
+    constructor(
+        public storage: Storage, 
+        public navCtrl: NavController, 
+        private fltutil: FltutilProvider, 
+        private fltunit: FltunitProvider,
+        private zone: NgZone
+    ) {
     }
 
     getFrequencyTable(): number[] {
@@ -70,12 +78,7 @@ export class DevicePage {
     }
 
     saveData() {
-        if (!this.validateFrequency(this.frequency)) {
-            this.fltutil.showToast("Invalid frequency!");
-            this.requestData();
-            return;
-        }
-        this.fltunit.saveData(this.ssid, this.password, this.frequency, this.minimumLapTime, this.thresholdLow, this.thresholdHigh, this.offset);
+        this.fltunit.saveData(this.ssid, this.password, this.frequency, this.minimumLapTime, this.triggerThreshold, this.triggerThresholdCalibration, this.calibrationOffset);
     }
 
     goBack() {
@@ -102,6 +105,13 @@ export class DevicePage {
         });
     }
 
+    requestState() {
+        let me = this;
+        this.fltunit.loadState().catch(function (msg: string) {
+            me.fltutil.showToast("Cannot get state: " + msg);
+        });
+    }
+
     doConnect() {
         let me = this;
         this.storage.get("bluetooth.id").then((id: string) => {
@@ -124,16 +134,6 @@ export class DevicePage {
         });
     }
 
-    handleConfigData(data: any) {
-        this.ssid = data.ssid;
-        this.password = data.password;
-        this.frequency = data.frequency;
-        this.minimumLapTime = data.minimumLapTime;
-        this.thresholdLow = data.thresholdLow;
-        this.thresholdHigh = data.thresholdHigh;
-        this.offset = data.offset;
-    }
-
     subscribe() {
         let me = this;
         this.fltunit.getObservable().subscribe(data => {
@@ -141,9 +141,23 @@ export class DevicePage {
             if (data.type == "message") {
                 me.fltutil.showToast(data.message);
             } else if (data.type == "newRssiValue") {
-                me.rssi = data.rssi;
+                me.zone.run(() => {
+                    me.rssi = data.rssi;
+                });
+            } else if (data.type == "newStateValue") {
+                me.zone.run(() => {
+                    me.state = data.state;
+                });
             } else if (data.type == "newConfigData") {
-                me.handleConfigData(data);
+                me.zone.run(() => {
+                    me.ssid = data.ssid;
+                    me.password = data.password;
+                    me.frequency = data.frequency;
+                    me.minimumLapTime = data.minimumLapTime;
+                    me.triggerThreshold = data.triggerThreshold;
+                    me.triggerThresholdCalibration = data.triggerThresholdCalibration;
+                    me.calibrationOffset = data.calibrationOffset;
+                });
             }
         });
     }
