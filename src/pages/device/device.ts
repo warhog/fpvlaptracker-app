@@ -23,7 +23,7 @@ export class DevicePage {
     private triggerThreshold: number = 0;
     private triggerThresholdCalibration: number = 0;
     private calibrationOffset: number = 0;
-    private state: string = "";
+    private state: string = "please update";
 
     constructor(
         public storage: Storage, 

@@ -102,9 +102,9 @@ export class FltunitProvider {
         this.bluetoothSerial.disconnect();
     }
 
-    scanChannels() {
+    startScanChannels() {
         return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("GET channels\n")
+            this.bluetoothSerial.write("SCAN start\n")
                 .then(function () {
                     resolve();
                 })
@@ -112,7 +112,18 @@ export class FltunitProvider {
                     reject(msg);
                 });
         });
+    }
 
+    stopScanChannels() {
+        return new Promise((resolve, reject) => {
+            this.bluetoothSerial.write("SCAN stop\n")
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (msg: string) {
+                    reject(msg);
+                });
+        });
     }
 
     loadConfigData() {
@@ -209,16 +220,28 @@ export class FltunitProvider {
                         state: data.substring(7, data.length)
                     }
                 );
-            } else if (data.startsWith("CHANNELS: ")) {
-                let channelData = JSON.parse(data.substring(10, data.length));
-                this.observer.next(
-                    {
-                        type: "newScanData",
-                        channels: channelData.channels,
-                        maxFreq: channelData.maxFreq,
-                        maxRssi: channelData.maxRssi
+            } else if (data.startsWith("SCAN: ")) {
+                if (data.startsWith("SCAN: started")) {
+                    this.fltutil.showToast("Scan started");
+                } else if (data.startsWith("SCAN: stopped")) {
+                    this.fltutil.showToast("Scan stopped");
+                } else {
+                    let channelData: string = data.substring(6, data.length);
+                    let parts: string[] = channelData.split("=");
+                    if (parts.length != 2) {
+                        this.fltutil.showToast("Scan split error");
+                        return;
                     }
-                );
+                    this.observer.next(
+                        {
+                            type: "newScanData",
+                            freq: Number(parts[0]),
+                            rssi: Number(parts[1])
+                        }
+                    );
+                }
+            // } else {
+            //     this.fltutil.showToast("unknown data: " + data);
             }
         } else if (this.isWaitingForSave()) {
             this.state = FLT_UNIT_STATES.VALIDATED;

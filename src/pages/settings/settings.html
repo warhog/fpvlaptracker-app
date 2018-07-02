@@ -12,17 +12,19 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding>
     <ion-list>
+        <h2>Selected node</h2>
+        <p>Currently selected node: {{bluetoothDevice}}</p>
+        <button ion-button icon-left (click)="gotoBluetoothSelection()">
+            <ion-icon name="bluetooth"></ion-icon> 
+            Select bluetooth device
+        </button>
+    </ion-list>
+    <hr />
 
-        <ion-list-header>Current Bluetooth device: {{bluetoothDevice}}</ion-list-header>
-        <ion-item>
-            <button ion-button icon-left (click)="gotoBluetoothSelection()">
-                    <ion-icon name="bluetooth"></ion-icon> 
-                Select bluetooth device
-            </button>
-        </ion-item>
-
+    <ion-list>
+        <h2>Race settings</h2>
         <ion-item>
             <ion-label stacked color="primary">Number of laps</ion-label>
             <ion-input type="number" [(ngModel)]="numberOfLaps" placeholder="laps"></ion-input>
@@ -32,13 +34,17 @@
             <ion-label>Keep awake during race</ion-label>
             <ion-checkbox [(ngModel)]="keepAwakeDuringRace"></ion-checkbox>
         </ion-item>
+    </ion-list>
+    <hr />
 
+    <ion-list>
+        <h2>RSSI scanner</h2>
         <ion-item>
+            <p>Scan all available channels for their signal strength.</p>
             <button ion-button icon-left (click)="gotoScanner()">
-                    <ion-icon name="funnel"></ion-icon> 
+                    <ion-icon name="stats"></ion-icon> 
                 Scan all channels
             </button>
         </ion-item>
-
     </ion-list>
 </ion-content>
