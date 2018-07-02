@@ -4,7 +4,7 @@ this is the repository for the fpvlaptracker mobile application.
 informations about the fpvlaptracker project can be found [here](https://github.com/warhog/fpvlaptracker).
 
 # download
-the application is found in the google play store (TODO links).
+the application is found in the google play store (https://play.google.com/store/apps/details?id=de.warhog.fpvlaptracker).
 
 currently there is no ios application available due to the lack of an iphone/mac.
 
