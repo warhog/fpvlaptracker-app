@@ -126,6 +126,17 @@
             <ion-label stacked>RSSI trigger threshold during calibration</ion-label>
             <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="triggerThresholdCalibration"></ion-input>
         </ion-item>
+
+        <ion-item>
+            <ion-label stacked>Current trigger value</ion-label>
+            <ion-input type="text" disabled value="" [(ngModel)]="triggerValue"></ion-input>
+        </ion-item>
+        <ion-item>
+            <button ion-button icon-left (click)="requestTriggerValue()">
+                    <ion-icon name="pulse"></ion-icon> 
+                Update trigger value
+            </button>
+        </ion-item>
     </ion-list>
 
     <ion-list>

@@ -9,6 +9,10 @@ import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
 
+interface LapData {
+    lapTime: number;
+    rssi: number;
+}
 @Component({
     selector: 'page-race',
     templateUrl: 'race.html'
@@ -20,7 +24,9 @@ export class RacePage {
     private raceStateText: string = "";
     private loader: any = null;
     private lastLapTime: number = 0;
+    private lastLapRssi: number = 0;
     private lapTimes: number[] = [];
+    private lapRssis: number[] = [];
     private currentLap: number = 0;
     private maxLaps: number = 10;
     private fastestLap: number = 1;
@@ -141,9 +147,11 @@ export class RacePage {
                     this.showToast("Race ended, max. number of laps reached");
                     this.setRaceState(RACESTATE.STOP);
                 }
-                let lapTime: string = data.substring(5);
-                this.lastLapTime = Number(lapTime);
+                let lapData: LapData = JSON.parse(data.substring(5));
+                this.lastLapTime = lapData.lapTime;
+                this.lastLapRssi = lapData.rssi;
                 this.lapTimes.push(this.lastLapTime);
+                this.lapRssis.push(this.lastLapRssi);
 
                 let fastestLap = 0;
                 let fastestLapTime = 99999999;

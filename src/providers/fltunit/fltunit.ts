@@ -186,6 +186,18 @@ export class FltunitProvider {
         });
     }
 
+    loadTriggerValue() {
+        return new Promise((resolve, reject) => {
+            this.bluetoothSerial.write("GET runtimedata\n")
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (msg: string) {
+                    reject(msg);
+                });
+        });
+    }
+
     checkValidDevice() {
         let me = this;
         this.state = FLT_UNIT_STATES.VALID_TEST;
@@ -228,7 +240,8 @@ export class FltunitProvider {
                         triggerThreshold: config.triggerThreshold,
                         triggerThresholdCalibration: config.triggerThresholdCalibration,
                         calibrationOffset: config.calibrationOffset,
-                        state: config.state
+                        state: config.state,
+                        triggerValue: config.triggerValue
                     }
                 );
             } else if (data.startsWith("RSSI: ")) {
@@ -243,6 +256,17 @@ export class FltunitProvider {
                     {
                         type: "newStateValue",
                         state: data.substring(7, data.length)
+                    }
+                );
+            } else if (data.startsWith("RUNTIME: ")) {
+                interface RuntimeData {
+                    triggerValue: number;
+                }
+                let runtimeData: RuntimeData = JSON.parse(data.substring(9, data.length));
+                this.observer.next(
+                    {
+                        type: "newRuntimeData",
+                        runtimeData: runtimeData
                     }
                 );
             } else if (data.startsWith("SCAN: ")) {

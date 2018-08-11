@@ -70,14 +70,8 @@
             <ion-col>
             </ion-col>
         </ion-row>
-        <ion-row>
-            <ion-col>
-                <p [hidden]="currentLap > 0">not finished a lap yet, waiting for first lap</p>
-                <p *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}}</p>
-            </ion-col>
-            <ion-col>
-            </ion-col>
-        </ion-row>
     </ion-grid>
+    <div [hidden]="currentLap > 0">not finished a lap yet, waiting for first lap</div>
+    <div *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}} (RSSI: {{lapRssis[i]}})</div>
 
 </ion-content>

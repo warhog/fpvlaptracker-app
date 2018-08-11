@@ -25,6 +25,7 @@ export class DevicePage {
     private triggerThresholdCalibration: number = 0;
     private calibrationOffset: number = 0;
     private state: string = "please update";
+    private triggerValue: number = 0;
 
     constructor(
         public storage: Storage, 
@@ -117,6 +118,13 @@ export class DevicePage {
         });
     }
 
+    requestTriggerValue() {
+        let me = this;
+        this.fltunit.loadTriggerValue().catch(function (msg: string) {
+            me.fltutil.showToast("Cannot get trigger value: " + msg);
+        });
+    }
+
     doConnect() {
         let me = this;
         this.storage.get("bluetooth.id").then((id: string) => {
@@ -153,6 +161,10 @@ export class DevicePage {
                 me.zone.run(() => {
                     me.state = data.state;
                 });
+            } else if (data.type == "newRuntimeData") {
+                me.zone.run(() => {
+                    me.triggerValue = data.runtimeData.triggerValue;
+                });
             } else if (data.type == "newConfigData") {
                 me.zone.run(() => {
                     me.ssid = data.ssid;
@@ -163,6 +175,7 @@ export class DevicePage {
                     me.triggerThresholdCalibration = data.triggerThresholdCalibration;
                     me.calibrationOffset = data.calibrationOffset;
                     me.state = data.state;
+                    me.triggerValue = data.triggerValue;
                 });
             }
         });
