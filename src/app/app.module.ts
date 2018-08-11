@@ -10,6 +10,7 @@ import {RacePage} from '../pages/race/race';
 import {DevicePage} from '../pages/device/device';
 import {HomePage} from '../pages/home/home';
 import {TabsPage} from '../pages/tabs/tabs';
+import {FastrssiPage} from '../pages/fastrssi/fastrssi';
 
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
@@ -31,7 +32,8 @@ import {FltunitProvider} from '../providers/fltunit/fltunit';
         DevicePage,
         RacePage,
         HomePage,
-        TabsPage
+        TabsPage,
+        FastrssiPage
     ],
     imports: [
         BrowserModule,
@@ -47,7 +49,8 @@ import {FltunitProvider} from '../providers/fltunit/fltunit';
         DevicePage,
         RacePage,
         HomePage,
-        TabsPage
+        TabsPage,
+        FastrssiPage
     ],
     providers: [
         StatusBar,

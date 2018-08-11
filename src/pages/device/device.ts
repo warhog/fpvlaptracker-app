@@ -6,6 +6,7 @@ import {Storage} from '@ionic/storage';
 import {FltutilProvider} from '../../providers/fltutil/fltutil'
 import {FltunitProvider} from '../../providers/fltunit/fltunit'
 import {NgZone} from "@angular/core";
+import {FastrssiPage} from '../fastrssi/fastrssi'
 
 @Component({
     selector: 'page-device',
@@ -88,6 +89,10 @@ export class DevicePage {
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
     }
+
+    gotoFastRssi() {
+        this.navCtrl.push(FastrssiPage);
+    }
     
     requestData() {
         this.fltutil.showLoader("Loading configuration...");
@@ -157,6 +162,7 @@ export class DevicePage {
                     me.triggerThreshold = data.triggerThreshold;
                     me.triggerThresholdCalibration = data.triggerThresholdCalibration;
                     me.calibrationOffset = data.calibrationOffset;
+                    me.state = data.state;
                 });
             }
         });

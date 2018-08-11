@@ -1,7 +1,7 @@
 <ion-header>
     <ion-navbar color="red">
         <ion-title>
-            Device {{deviceName}}
+            {{deviceName}}
         </ion-title>
         <ion-buttons end>
             <button ion-button icon-left (click)="requestData()">
@@ -18,20 +18,6 @@
 
 <ion-content padding>
 
-    <h2>WiFi</h2>
-    <p><b>Only non standalone mode!</b><br />The WiFi network this tracker unit is connecting to.</p>
-    <ion-list>
-        <ion-item>
-            <ion-label stacked>SSID</ion-label>
-            <ion-input type="text" value="" [(ngModel)]="ssid"></ion-input>
-        </ion-item>
-
-        <ion-item>
-            <ion-label stacked>Password</ion-label>
-            <ion-input type="password" [(ngModel)]="password"></ion-input>
-        </ion-item>
-
-    </ion-list>
     <h2>Receiver</h2>
     <p>The frequency this tracker unit is listening on.</p>
     <ion-list>
@@ -142,10 +128,41 @@
         </ion-item>
     </ion-list>
 
-    <h2>Misc</h2>
-    <button ion-button icon-left (click)="reboot()">
-            <ion-icon name="build"></ion-icon> 
-        Reboot unit
-    </button>
+    <ion-list>
+        <h2>Fast RSSI monitor</h2>
+        <ion-item>
+            <p>Open the RSSI monitor to display live RSSI values.</p>
+            <button ion-button icon-left (click)="gotoFastRssi()">
+                    <ion-icon name="stats"></ion-icon> 
+                Fast RSSI monitor
+            </button>
+        </ion-item>
+    </ion-list>
+
+    <h2>WiFi</h2>
+    <p><b>Only non standalone mode!</b><br />The WiFi network this tracker unit is connecting to.</p>
+    <ion-list>
+        <ion-item>
+            <ion-label stacked>SSID</ion-label>
+            <ion-input type="text" value="" [(ngModel)]="ssid"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked>Password</ion-label>
+            <ion-input type="password" [(ngModel)]="password"></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <ion-list>
+        <h2>Misc</h2>
+        <ion-item>
+            <p>Reboot the tracker unit.</p>
+            <button ion-button icon-left (click)="reboot()">
+                <ion-icon name="build"></ion-icon> 
+                Reboot unit
+            </button>
+        </ion-item>
+    </ion-list>
 
 </ion-content>

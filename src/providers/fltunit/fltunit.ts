@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
-import {FltutilProvider} from '../../providers/fltutil/fltutil'
+import {FltutilProvider} from '../fltutil/fltutil'
 import {Observable} from 'rxjs/Observable';
 
 enum FLT_UNIT_STATES {
@@ -104,7 +104,7 @@ export class FltunitProvider {
 
     startScanChannels() {
         return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("SCAN start\n")
+            this.bluetoothSerial.write("START scan\n")
                 .then(function () {
                     resolve();
                 })
@@ -116,7 +116,31 @@ export class FltunitProvider {
 
     stopScanChannels() {
         return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("SCAN stop\n")
+            this.bluetoothSerial.write("STOP scan\n")
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (msg: string) {
+                    reject(msg);
+                });
+        });
+    }
+
+    startFastRssi() {
+        return new Promise((resolve, reject) => {
+            this.bluetoothSerial.write("START rssi\n")
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (msg: string) {
+                    reject(msg);
+                });
+        });
+    }
+
+    stopFastRssi() {
+        return new Promise((resolve, reject) => {
+            this.bluetoothSerial.write("STOP rssi\n")
                 .then(function () {
                     resolve();
                 })
@@ -203,7 +227,8 @@ export class FltunitProvider {
                         minimumLapTime: config.minimumLapTime,
                         triggerThreshold: config.triggerThreshold,
                         triggerThresholdCalibration: config.triggerThresholdCalibration,
-                        calibrationOffset: config.calibrationOffset
+                        calibrationOffset: config.calibrationOffset,
+                        state: config.state
                     }
                 );
             } else if (data.startsWith("RSSI: ")) {

@@ -44,11 +44,13 @@ export class ScannerPage {
 
     stopScanChannels() {
         let me = this;
-        this.fltunit.stopScanChannels().then(function() {
-            me.scanRunning = false;
-        }).catch(function (msg: string) {
-            me.fltutil.showToast("Cannot stop channel scan: " + msg);
-        });
+        if (this.scanRunning) {
+            this.fltunit.stopScanChannels().then(function() {
+                me.scanRunning = false;
+            }).catch(function (msg: string) {
+                me.fltutil.showToast("Cannot stop channel scan: " + msg);
+            });
+        }
     }
 
     gotoSettings() {
