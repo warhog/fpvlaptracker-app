@@ -32,6 +32,8 @@ export class DevicePage {
         triggerValue: 0
     };
     private rssi: number = 0;
+
+    // linter complains about not used but is used in html
     private deviceName: string = "";
 
     constructor(
@@ -88,10 +90,6 @@ export class DevicePage {
 
     saveData() {
         this.fltunit.saveData(this.configData);
-    }
-
-    goBack() {
-        this.navCtrl.popTo(HomePage);
     }
 
     gotoSettings() {

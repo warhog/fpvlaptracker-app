@@ -19,7 +19,6 @@ import {FltunitProvider} from '../../providers/fltunit/fltunit';
 })
 export class RacePage {
 
-    private state: number = STATES.DISCONNECTED;
     private raceState: RACESTATE = RACESTATE.STOP;
     private raceStateText: string = "";
     private loader: any = null;
@@ -248,12 +247,3 @@ enum RACESTATE {
     STOP,
     RUNNING
 }
-
-enum STATES {
-    DISCONNECTED = 0,
-    CONNECTED,
-    VALID_TEST,
-    VALIDATED,
-    CHECK_SAVE_SUCCESS
-}
-

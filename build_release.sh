@@ -5,7 +5,7 @@ rm -f flt.apk
 # set the path to the platform tools
 PATH=$PATH:/home/$USER/Android/Sdk/platform-tools
 
-ionic cordova build --release android
+ionic cordova build --release --prod android
 if [ $? -ne 0 ]; then
     echo "failed to build"
     exit 1
