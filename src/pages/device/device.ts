@@ -3,10 +3,15 @@ import {NavController} from 'ionic-angular';
 import {BluetoothPage} from '../bluetooth/bluetooth';
 import {HomePage} from '../home/home';
 import {Storage} from '@ionic/storage';
-import {FltutilProvider} from '../../providers/fltutil/fltutil'
-import {FltunitProvider} from '../../providers/fltunit/fltunit'
-import {NgZone} from "@angular/core";
-import {FastrssiPage} from '../fastrssi/fastrssi'
+import {FltutilProvider} from '../../providers/fltutil/fltutil';
+import {FltunitProvider} from '../../providers/fltunit/fltunit';
+import {NgZone} from '@angular/core';
+import {FastrssiPage} from '../fastrssi/fastrssi';
+import * as ConfigData from '../../models/configdata-interface'
+import * as RuntimeData from '../../models/runtimedata-interface'
+import * as StateData from '../../models/statedata-interface'
+import * as RssiData from '../../models/rssidata-interface'
+import * as MessageData from '../../models/messagedata-interface'
 
 @Component({
     selector: 'page-device',
@@ -15,17 +20,18 @@ import {FastrssiPage} from '../fastrssi/fastrssi'
 
 export class DevicePage {
 
+    private configData: ConfigData.ConfigData;
     private rssi: number = 0;
     private deviceName: string = "";
-    private ssid: string = "";
-    private password: string = "";
-    private frequency: number = 0;
-    private minimumLapTime: number = 0;
-    private triggerThreshold: number = 0;
-    private triggerThresholdCalibration: number = 0;
-    private calibrationOffset: number = 0;
-    private state: string = "please update";
-    private triggerValue: number = 0;
+    // private ssid: string = "";
+    // private password: string = "";
+    // private frequency: number = 0;
+    // private minimumLapTime: number = 0;
+    // private triggerThreshold: number = 0;
+    // private triggerThresholdCalibration: number = 0;
+    // private calibrationOffset: number = 0;
+    // private state: string = "please update";
+    // private triggerValue: number = 0;
 
     constructor(
         public storage: Storage, 
@@ -80,7 +86,7 @@ export class DevicePage {
     }
 
     saveData() {
-        this.fltunit.saveData(this.ssid, this.password, this.frequency, this.minimumLapTime, this.triggerThreshold, this.triggerThresholdCalibration, this.calibrationOffset);
+        this.fltunit.saveData(this.configData.ssid, this.configData.password, this.configData.frequency, this.configData.minimumLapTime, this.configData.triggerThreshold, this.configData.triggerThresholdCalibration, this.configData.calibrationOffset);
     }
 
     goBack() {
@@ -148,36 +154,64 @@ export class DevicePage {
     }
 
     subscribe() {
+        if (!this.fltunit.isConnected()) {
+            this.fltutil.showToast('Not connected');
+            this.fltutil.hideLoader();
+            this.navCtrl.pop();
+            return;
+        }
         let me = this;
         this.fltunit.getObservable().subscribe(data => {
             me.fltutil.hideLoader();
-            if (data.type == "message") {
-                me.fltutil.showToast(data.message);
-            } else if (data.type == "newRssiValue") {
+            if (ConfigData.isConfigData(data)) {
+                me.zone.run(() => {
+                    me.configData = data;
+                });
+            } else if (RuntimeData.isRuntimeData(data)) {
+                me.zone.run(() => {
+                    me.configData.triggerValue = data.triggerValue;
+                });
+            } else if (StateData.isStateData(data)) {
+                me.zone.run(() => {
+                    me.configData.state = data.state;
+                });
+            } else if (RssiData.isRssiData(data)) {
                 me.zone.run(() => {
                     me.rssi = data.rssi;
                 });
-            } else if (data.type == "newStateValue") {
-                me.zone.run(() => {
-                    me.state = data.state;
-                });
-            } else if (data.type == "newRuntimeData") {
-                me.zone.run(() => {
-                    me.triggerValue = data.runtimeData.triggerValue;
-                });
-            } else if (data.type == "newConfigData") {
-                me.zone.run(() => {
-                    me.ssid = data.ssid;
-                    me.password = data.password;
-                    me.frequency = data.frequency;
-                    me.minimumLapTime = data.minimumLapTime;
-                    me.triggerThreshold = data.triggerThreshold;
-                    me.triggerThresholdCalibration = data.triggerThresholdCalibration;
-                    me.calibrationOffset = data.calibrationOffset;
-                    me.state = data.state;
-                    me.triggerValue = data.triggerValue;
-                });
+            } else if (MessageData.isMessageData(data)) {
+                me.fltutil.showToast(data.message);
             }
+
+            // if (data.type == "message") {
+            //     me.fltutil.showToast(data.message);
+            // } else if (data.type == "newRssiValue") {
+            //     me.zone.run(() => {
+            //         me.rssi = data.rssi;
+            //     });
+            // } else if (data.type == "newStateValue") {
+            //     me.zone.run(() => {
+            //         me.configData.state = data.state;
+            //         // me.state = data.state;
+            //     });
+            // } else if (data.type == "newRuntimeData") {
+            //     me.zone.run(() => {
+                    
+            //         // me.triggerValue = data.runtimeData.triggerValue;
+            //     });
+            // } else if (data.type == "newConfigData") {
+            //     me.zone.run(() => {
+            //         me.ssid = data.ssid;
+            //         me.password = data.password;
+            //         me.frequency = data.frequency;
+            //         me.minimumLapTime = data.minimumLapTime;
+            //         me.triggerThreshold = data.triggerThreshold;
+            //         me.triggerThresholdCalibration = data.triggerThresholdCalibration;
+            //         me.calibrationOffset = data.calibrationOffset;
+            //         me.state = data.state;
+            //         me.triggerValue = data.triggerValue;
+            //     });
+        //     }
         });
     }
 

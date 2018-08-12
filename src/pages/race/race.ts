@@ -8,11 +8,8 @@ import {LoadingController} from 'ionic-angular';
 import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
+import {LapData} from '../../models/lapdata-interface'
 
-interface LapData {
-    lapTime: number;
-    rssi: number;
-}
 @Component({
     selector: 'page-race',
     templateUrl: 'race.html'

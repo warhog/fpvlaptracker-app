@@ -3,6 +3,8 @@ import 'rxjs/add/operator/map';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {FltutilProvider} from '../fltutil/fltutil'
 import {Observable} from 'rxjs/Observable';
+import {RuntimeData} from '../../models/runtimedata-interface';
+import {ConfigData} from '../../models/configdata-interface';
 
 enum FLT_UNIT_STATES {
     DISCONNECTED = 0,
@@ -74,7 +76,14 @@ export class FltunitProvider {
         });
     }
 
+    isConnected() {
+        return this.bluetoothSerial.isConnected();
+    }
+
     connect(id: string, name: string) {
+        if (this.isConnected) {
+            this.disconnect();
+        }
         return new Promise((resolve, reject) => {
             this.fltutil.showLoader("Connecting to " + name + ", please wait...");
 
@@ -102,9 +111,9 @@ export class FltunitProvider {
         this.bluetoothSerial.disconnect();
     }
 
-    startScanChannels() {
+    simpleRequest(requestString) : Promise<string> {
         return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("START scan\n")
+            this.bluetoothSerial.write(requestString + '\n')
                 .then(function () {
                     resolve();
                 })
@@ -112,90 +121,38 @@ export class FltunitProvider {
                     reject(msg);
                 });
         });
+    }
+
+    startScanChannels() {
+        this.simpleRequest("START scan");
     }
 
     stopScanChannels() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("STOP scan\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("STOP scan");
     }
 
     startFastRssi() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("START rssi\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("START rssi");
     }
 
     stopFastRssi() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("STOP rssi\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("STOP rssi");
     }
 
     loadConfigData() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("GET config\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("GET config");
     }
 
     loadRssi() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("GET rssi\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("GET rssi");
     }
 
     loadState() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("GET state\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("GET state");
     }
 
     loadTriggerValue() {
-        return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write("GET runtimedata\n")
-                .then(function () {
-                    resolve();
-                })
-                .catch(function (msg: string) {
-                    reject(msg);
-                });
-        });
+        this.simpleRequest("GET runtimedata");
     }
 
     checkValidDevice() {
@@ -210,13 +167,11 @@ export class FltunitProvider {
 
     reboot() {
         let me = this;
-        this.bluetoothSerial.write("REBOOT\n")
-            .then(function () {
-                me.fltutil.showToast("Rebooting unit, this may take up to 1 minute.");
-            })
-            .catch(function (errMsg) {
-                me.fltutil.showToast("Cannot reboot unit: " + errMsg);
-            });
+        this.simpleRequest("REBOOT").then(function() {
+            me.fltutil.showToast("Rebooting unit, this may take up to 1 minute.");
+        }).catch(function (errMsg) {
+            me.fltutil.showToast("Cannot reboot unit: " + errMsg);
+        });
     }
 
     onReceive(data: string) {
@@ -229,21 +184,8 @@ export class FltunitProvider {
             }
         } else if (this.isValidated()) {
             if (data.startsWith("CONFIG: ")) {
-                let config: any = JSON.parse(data.substring(8, data.length));
-                this.observer.next(
-                    {
-                        type: "newConfigData",
-                        ssid: config.ssid,
-                        password: config.password,
-                        frequency: config.frequency,
-                        minimumLapTime: config.minimumLapTime,
-                        triggerThreshold: config.triggerThreshold,
-                        triggerThresholdCalibration: config.triggerThresholdCalibration,
-                        calibrationOffset: config.calibrationOffset,
-                        state: config.state,
-                        triggerValue: config.triggerValue
-                    }
-                );
+                let config: ConfigData = JSON.parse(data.substring(8, data.length));
+                this.observer.next(config);
             } else if (data.startsWith("RSSI: ")) {
                 this.observer.next(
                     {
@@ -259,9 +201,6 @@ export class FltunitProvider {
                     }
                 );
             } else if (data.startsWith("RUNTIME: ")) {
-                interface RuntimeData {
-                    triggerValue: number;
-                }
                 let runtimeData: RuntimeData = JSON.parse(data.substring(9, data.length));
                 this.observer.next(
                     {

@@ -23,7 +23,7 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>Frequency</ion-label>
-            <ion-select [(ngModel)]="frequency" interface="popover">
+            <ion-select [(ngModel)]="configData.frequency" interface="popover">
               <ion-option value="5865">Band A 1</ion-option>
               <ion-option value="5845">Band A 2</ion-option>
               <ion-option value="5825">Band A 3</ion-option>
@@ -91,7 +91,7 @@
         </ion-item>
         <ion-item>
             <ion-label stacked>State</ion-label>
-            <ion-input type="text" disabled value="" [(ngModel)]="state"></ion-input>
+            <ion-input type="text" disabled value="" [(ngModel)]="configData.state"></ion-input>
         </ion-item>
         <ion-item>
             <button ion-button icon-left (click)="requestState()">
@@ -104,7 +104,7 @@
             <h3>RSSI calibration offset</h3>
             <p>The RSSI offset that is substracted during calibration run. Improves lap detection but can add jitter to lap times.</p>
             <ion-label stacked>Calibration Offset</ion-label>
-            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="calibrationOffset"></ion-input>
+            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="configData.calibrationOffset"></ion-input>
         </ion-item>
     </ion-list>
 
@@ -113,23 +113,23 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>Minimum lap time</ion-label>
-            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="minimumLapTime"></ion-input>
+            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="configData.minimumLapTime"></ion-input>
         </ion-item>
 
         <ion-item>
             <p>The trigger threshold defines the RSSI window in which the lap detection is active.</p>
             <ion-label stacked>RSSI trigger threshold</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="triggerThreshold"></ion-input>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>RSSI trigger threshold during calibration</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="triggerThresholdCalibration"></ion-input>
+            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="configData.triggerThresholdCalibration"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>Current trigger value</ion-label>
-            <ion-input type="text" disabled value="" [(ngModel)]="triggerValue"></ion-input>
+            <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
         </ion-item>
         <ion-item>
             <button ion-button icon-left (click)="requestTriggerValue()">
@@ -155,12 +155,12 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>SSID</ion-label>
-            <ion-input type="text" value="" [(ngModel)]="ssid"></ion-input>
+            <ion-input type="text" value="" [(ngModel)]="configData.ssid"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>Password</ion-label>
-            <ion-input type="password" [(ngModel)]="password"></ion-input>
+            <ion-input type="password" [(ngModel)]="configData.password"></ion-input>
         </ion-item>
 
     </ion-list>
