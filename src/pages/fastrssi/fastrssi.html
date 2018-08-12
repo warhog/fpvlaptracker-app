@@ -20,5 +20,6 @@
     <p [hidden]="fastrssiRunning">Press Start to start fast RSSI monitor mode!</p>
     <p [hidden]="!fastrssiRunning">Press Stop to stop fast RSSI monitor mode!</p>
     <hr />
-    <h1>{{rssi}}</h1>
+    <h1 [hidden]="fastrssiRunning">0</h1>
+    <h1 [hidden]="!fastrssiRunning">{{rssi}}</h1>
 </ion-content>

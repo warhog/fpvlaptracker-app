@@ -34,7 +34,6 @@ export class FastrssiPage {
         let me = this;
         if (this.fastrssiRunning) {
             this.fltunit.stopFastRssi().then(function() {
-                this.rssi = 0;
                 me.fastrssiRunning = false;
             }).catch(function (msg: string) {
                 me.fltutil.showToast("Cannot stop fastrssi: " + msg);
