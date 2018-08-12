@@ -8,7 +8,7 @@ import {LoadingController} from 'ionic-angular';
 import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
-import {LapData} from '../../models/lapdata-interface'
+import {LapData} from '../../models/lapdata'
 
 @Component({
     selector: 'page-race',

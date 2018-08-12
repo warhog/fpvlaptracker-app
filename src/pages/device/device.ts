@@ -7,11 +7,11 @@ import {FltutilProvider} from '../../providers/fltutil/fltutil';
 import {FltunitProvider} from '../../providers/fltunit/fltunit';
 import {NgZone} from '@angular/core';
 import {FastrssiPage} from '../fastrssi/fastrssi';
-import * as ConfigData from '../../models/configdata-interface'
-import * as RuntimeData from '../../models/runtimedata-interface'
-import * as StateData from '../../models/statedata-interface'
-import * as RssiData from '../../models/rssidata-interface'
-import * as MessageData from '../../models/messagedata-interface'
+import * as ConfigData from '../../models/configdata'
+import * as RuntimeData from '../../models/runtimedata'
+import * as StateData from '../../models/statedata'
+import * as RssiData from '../../models/rssidata'
+import * as MessageData from '../../models/messagedata'
 
 @Component({
     selector: 'page-device',
@@ -20,18 +20,19 @@ import * as MessageData from '../../models/messagedata-interface'
 
 export class DevicePage {
 
-    private configData: ConfigData.ConfigData;
+    private configData: ConfigData.ConfigData = {
+        ssid: "",
+        password: "",
+        frequency: 0,
+        minimumLapTime: 0,
+        triggerThreshold: 0,
+        triggerThresholdCalibration: 0,
+        calibrationOffset: 0,
+        state: "",
+        triggerValue: 0
+    };
     private rssi: number = 0;
     private deviceName: string = "";
-    // private ssid: string = "";
-    // private password: string = "";
-    // private frequency: number = 0;
-    // private minimumLapTime: number = 0;
-    // private triggerThreshold: number = 0;
-    // private triggerThresholdCalibration: number = 0;
-    // private calibrationOffset: number = 0;
-    // private state: string = "please update";
-    // private triggerValue: number = 0;
 
     constructor(
         public storage: Storage, 
@@ -86,7 +87,8 @@ export class DevicePage {
     }
 
     saveData() {
-        this.fltunit.saveData(this.configData.ssid, this.configData.password, this.configData.frequency, this.configData.minimumLapTime, this.configData.triggerThreshold, this.configData.triggerThresholdCalibration, this.configData.calibrationOffset);
+        this.fltunit.saveData(this.configData);
+        //this.fltunit.saveData(this.configData.ssid, this.configData.password, this.configData.frequency, this.configData.minimumLapTime, this.configData.triggerThreshold, this.configData.triggerThresholdCalibration, this.configData.calibrationOffset);
     }
 
     goBack() {
@@ -182,36 +184,6 @@ export class DevicePage {
             } else if (MessageData.isMessageData(data)) {
                 me.fltutil.showToast(data.message);
             }
-
-            // if (data.type == "message") {
-            //     me.fltutil.showToast(data.message);
-            // } else if (data.type == "newRssiValue") {
-            //     me.zone.run(() => {
-            //         me.rssi = data.rssi;
-            //     });
-            // } else if (data.type == "newStateValue") {
-            //     me.zone.run(() => {
-            //         me.configData.state = data.state;
-            //         // me.state = data.state;
-            //     });
-            // } else if (data.type == "newRuntimeData") {
-            //     me.zone.run(() => {
-                    
-            //         // me.triggerValue = data.runtimeData.triggerValue;
-            //     });
-            // } else if (data.type == "newConfigData") {
-            //     me.zone.run(() => {
-            //         me.ssid = data.ssid;
-            //         me.password = data.password;
-            //         me.frequency = data.frequency;
-            //         me.minimumLapTime = data.minimumLapTime;
-            //         me.triggerThreshold = data.triggerThreshold;
-            //         me.triggerThresholdCalibration = data.triggerThresholdCalibration;
-            //         me.calibrationOffset = data.calibrationOffset;
-            //         me.state = data.state;
-            //         me.triggerValue = data.triggerValue;
-            //     });
-        //     }
         });
     }
 
