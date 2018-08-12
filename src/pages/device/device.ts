@@ -88,7 +88,6 @@ export class DevicePage {
 
     saveData() {
         this.fltunit.saveData(this.configData);
-        //this.fltunit.saveData(this.configData.ssid, this.configData.password, this.configData.frequency, this.configData.minimumLapTime, this.configData.triggerThreshold, this.configData.triggerThresholdCalibration, this.configData.calibrationOffset);
     }
 
     goBack() {
@@ -135,22 +134,8 @@ export class DevicePage {
 
     doConnect() {
         let me = this;
-        this.storage.get("bluetooth.id").then((id: string) => {
-            this.storage.get("bluetooth.name").then((name: string) => {
-                this.deviceName = name;
-                this.fltunit.connect(id, name)
-                    .then(function () {
-
-                    })
-                    .catch(function (errMsg: string) {
-                        me.fltunit.disconnect();
-                        me.fltutil.showToast(errMsg);
-                        me.gotoSettings();
-                    });
-            }).catch(() => {
-                me.gotoSettings();
-            });
-        }).catch(() => {
+        this.fltunit.connect().catch(function (errMsg: string) {
+            me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });
     }

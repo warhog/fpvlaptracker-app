@@ -9,6 +9,8 @@ import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
 import {LapData} from '../../models/lapdata'
+import {FltutilProvider} from '../../providers/fltutil/fltutil';
+import {FltunitProvider} from '../../providers/fltunit/fltunit';
 
 @Component({
     selector: 'page-race',
@@ -68,7 +70,18 @@ export class RacePage {
         }
     }
 
-    constructor(public zone: NgZone, private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private loadingCtrl: LoadingController, private bluetoothSerial: BluetoothSerial, private smartAudio: SmartAudioProvider, private insomnia: Insomnia) {
+    constructor(
+        public zone: NgZone,
+        private storage: Storage, 
+        public toastCtrl: ToastController, 
+        public navCtrl: NavController, 
+        private loadingCtrl: LoadingController, 
+        private bluetoothSerial: BluetoothSerial, 
+        private smartAudio: SmartAudioProvider, 
+        private insomnia: Insomnia,
+        private fltutil: FltutilProvider,
+        private fltunit: FltunitProvider
+        ) {
         this.restartRace();
         this.setRaceState(RACESTATE.STOP);
     }
@@ -173,47 +186,10 @@ export class RacePage {
         }
     }
 
-    connect(id: string, name: string) {
-
-        return new Promise((resolve, reject) => {
-            this.showLoader("Connecting to " + name + ", please wait...");
-
-            this.bluetoothSerial.connect(id).subscribe((data) => {
-                this.hideLoader();
-                this.state = STATES.CONNECTED;
-                this.bluetoothSerial.subscribe("\n").subscribe((data) => {
-                    this.onReceive(data);
-                }, (errMsg) => {
-                    this.showToast(errMsg);
-                    this.disconnect();
-                });
-                this.checkValidDevice();
-                resolve();
-            }, (errMsg) => {
-                this.hideLoader();
-                this.disconnect();
-                reject(errMsg);
-            });
-        });
-    }
-
     doConnect() {
         let me = this;
-        this.storage.get("bluetooth.id").then((id: string) => {
-            this.storage.get("bluetooth.name").then((name: string) => {
-                this.connect(id, name)
-                    .then(function () {
-
-                    })
-                    .catch(function (errMsg: string) {
-                        me.disconnect();
-                        me.showToast(errMsg);
-                        me.gotoSettings();
-                    });
-            }).catch(() => {
-                me.gotoSettings();
-            });
-        }).catch(() => {
+        this.fltunit.connect().catch(function (errMsg: string) {
+            me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });
     }
@@ -234,7 +210,7 @@ export class RacePage {
     }
 
     ionViewWillLeave() {
-        this.disconnect();
+        this.fltunit.disconnect();
         this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
             if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
                 keepAwakeDuringRace = false;
@@ -243,21 +219,6 @@ export class RacePage {
                 this.insomnia.allowSleepAgain();
             }
         });
-    }
-
-    disconnect() {
-        this.state = STATES.DISCONNECTED;
-        this.bluetoothSerial.disconnect();
-    }
-
-    checkValidDevice() {
-        let me = this;
-        this.state = STATES.VALID_TEST;
-        this.bluetoothSerial.write("GET version\n")
-            .catch(function () {
-                me.showToast("Cannot validate device.");
-                me.disconnect();
-            });
     }
 
 }

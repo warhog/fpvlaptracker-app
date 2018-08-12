@@ -3,6 +3,7 @@ import 'rxjs/add/operator/map';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {FltutilProvider} from '../fltutil/fltutil'
 import {Observable} from 'rxjs/Observable';
+import {Storage} from '@ionic/storage';
 import {RuntimeData} from '../../models/runtimedata';
 import {ConfigData} from '../../models/configdata';
 import {StateData} from '../../models/statedata'
@@ -29,14 +30,19 @@ export class FltunitProvider {
 
     private version: string = "";
     private state: number = FLT_UNIT_STATES.DISCONNECTED;
+    private deviceName: string = "";
 
     private observable: any;
     private observer: any;
 
-    constructor(private bluetoothSerial: BluetoothSerial, private fltutil: FltutilProvider) {
+    constructor(private bluetoothSerial: BluetoothSerial, private fltutil: FltutilProvider, private storage: Storage) {
         this.observable = Observable.create(observer => {
             this.observer = observer;
         });
+    }
+
+    getDeviceName(): string {
+        return this.deviceName;
     }
 
     getObservable(): Observable<any> {
@@ -75,28 +81,39 @@ export class FltunitProvider {
         return this.bluetoothSerial.isConnected();
     }
 
-    connect(id: string, name: string) {
+    connect() : Promise<string> {
         if (this.isConnected) {
             this.disconnect();
         }
+        let me = this;
         return new Promise((resolve, reject) => {
-            this.fltutil.showLoader("Connecting to " + name + ", please wait...");
-
-            this.bluetoothSerial.connect(id).subscribe((data) => {
-                this.fltutil.hideLoader();
-                this.state = FLT_UNIT_STATES.CONNECTED;
-                this.bluetoothSerial.subscribe("\n").subscribe((data) => {
-                    this.onReceive(data);
-                }, (errMsg) => {
-                    this.fltutil.showToast(errMsg);
-                    this.disconnect();
+            me.storage.get("bluetooth.id").then((id: string) => {
+                me.storage.get("bluetooth.name").then((name: string) => {
+                    me.deviceName = name;
+                    me.fltutil.showLoader("Connecting to " + name + ", please wait...");
+                    me.bluetoothSerial.connect(id).subscribe((data) => {
+                        me.fltutil.hideLoader();
+                        me.state = FLT_UNIT_STATES.CONNECTED;
+                        me.bluetoothSerial.subscribe("\n").subscribe((data) => {
+                            me.onReceive(data);
+                        }, (errMsg) => {
+                            me.disconnect();
+                            reject(errMsg);
+                        });
+                        me.checkValidDevice();
+                        resolve();
+                    }, (errMsg) => {
+                        me.fltutil.hideLoader();
+                        me.disconnect();
+                        reject(errMsg);
+                    });
+                }).catch(() => {
+                    me.disconnect();
+                    reject("Cannot load bluetooth name");
                 });
-                this.checkValidDevice();
-                resolve();
-            }, (errMsg) => {
-                this.fltutil.hideLoader();
-                this.disconnect();
-                reject(errMsg);
+            }).catch(() => {
+                me.disconnect();
+                reject("Cannot load bluetooth id");
             });
         });
     }
