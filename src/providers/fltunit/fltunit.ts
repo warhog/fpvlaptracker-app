@@ -62,17 +62,7 @@ export class FltunitProvider {
         this.state = state;
     }
 
-    // saveData(ssid: string, password: string, frequency: number, minimumLapTime: number, triggerThreshold: number, triggerThresholdCalibration: number, calibrationOffset: number) {
     saveData(configData: ConfigData) {
-        // let data = {
-        //     "ssid": ssid,
-        //     "password": password,
-        //     "frequency": frequency,
-        //     "minimumLapTime": minimumLapTime,
-        //     "triggerThreshold": triggerThreshold,
-        //     "triggerThresholdCalibration": triggerThresholdCalibration,
-        //     "calibrationOffset": calibrationOffset
-        // };
         this.setState(FLT_UNIT_STATES.CHECK_SAVE_SUCCESS);
         let me = this;
         this.bluetoothSerial.write("PUT config " + JSON.stringify(configData) + "\n").catch(function (msg) {
@@ -215,8 +205,8 @@ export class FltunitProvider {
                     let scanData: ScanData = { freq: Number(parts[0]), rssi: Number(parts[1]) };
                     this.observer.next(scanData);
                 }
-             } else {
-                 this.fltutil.showToast("unknown data: " + data);
+            //  } else {
+            //      this.fltutil.showToast("unknown data: " + data);
             }
         } else if (this.isWaitingForSave()) {
             this.state = FLT_UNIT_STATES.VALIDATED;
