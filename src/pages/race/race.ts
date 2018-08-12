@@ -8,7 +8,8 @@ import {LoadingController} from 'ionic-angular';
 import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
-import {LapData} from '../../models/lapdata'
+import * as LapData from '../../models/lapdata'
+import * as MessageData from '../../models/messagedata'
 import {FltutilProvider} from '../../providers/fltutil/fltutil';
 import {FltunitProvider} from '../../providers/fltunit/fltunit';
 
@@ -53,8 +54,10 @@ export class RacePage {
     }
 
     setRaceState(state: RACESTATE) {
-        this.raceState = state;
-        this.raceStateText = this.getStateText();
+        this.zone.run(() => {
+            this.raceState = state;
+            this.raceStateText = this.getStateText();
+        });
     }
 
     getStateText(): string {
@@ -145,47 +148,6 @@ export class RacePage {
         return this.raceState == RACESTATE.WAITING;
     }
 
-    onReceive(data: string) {
-        if (data.startsWith("LAP: ")) {
-            if (this.isRaceWaiting()) {
-                this.smartAudio.play('lap');
-                this.currentLap++;
-                this.setRaceState(RACESTATE.RUNNING);
-            } else if (this.isRaceRunning()) {
-                if (this.currentLap >= this.maxLaps) {
-                    this.smartAudio.play('finished');
-                    this.showToast("Race ended, max. number of laps reached");
-                    this.setRaceState(RACESTATE.STOP);
-                }
-                let lapData: LapData = JSON.parse(data.substring(5));
-                this.lastLapTime = lapData.lapTime;
-                this.lastLapRssi = lapData.rssi;
-                this.lapTimes.push(this.lastLapTime);
-                this.lapRssis.push(this.lastLapRssi);
-
-                let fastestLap = 0;
-                let fastestLapTime = 99999999;
-                let totalTime = 0;
-                this.lapTimes.forEach(function (lap, index) {
-                    if (lap < fastestLapTime) {
-                        fastestLapTime = lap;
-                        fastestLap = index + 1;
-                    }
-                    totalTime += lap;
-                });
-                this.totalTime = totalTime;
-                this.averageLapTime = Number(totalTime) / this.lapTimes.length;
-                this.fastestLap = fastestLap;
-                this.fastestLapTime = fastestLapTime;
-                if (this.isRaceRunning()) {
-                    this.smartAudio.play('lap');
-                    this.currentLap++;
-                }
-                this.zone.run(() => {});
-            }
-        }
-    }
-
     doConnect() {
         let me = this;
         this.fltunit.connect().catch(function (errMsg: string) {
@@ -194,8 +156,66 @@ export class RacePage {
         });
     }
 
+    subscribe() {
+        if (!this.fltunit.isConnected()) {
+            this.fltutil.showToast('Not connected');
+            this.fltutil.hideLoader();
+            this.navCtrl.pop();
+            return;
+        }
+        let me = this;
+        this.fltunit.getObservable().subscribe(data => {
+            me.fltutil.hideLoader();
+            if (LapData.isLapData(data)) {
+                if (this.isRaceWaiting()) {
+                    this.zone.run(() => {
+                        this.currentLap++;
+                    });
+                    this.setRaceState(RACESTATE.RUNNING);
+                    this.smartAudio.play('lap');
+                } else if (this.isRaceRunning()) {
+                    if (this.currentLap >= this.maxLaps) {
+                        this.smartAudio.play('finished');
+                        this.showToast("Race ended, max. number of laps reached");
+                        this.setRaceState(RACESTATE.STOP);
+                    }
+                    this.zone.run(() => {
+                        this.lastLapTime = data.lapTime;
+                        this.lastLapRssi = data.rssi;
+                        this.lapTimes.push(this.lastLapTime);
+                        this.lapRssis.push(this.lastLapRssi);
+        
+                        let fastestLap = 0;
+                        let fastestLapTime = 99999999;
+                        let totalTime = 0;
+                        this.lapTimes.forEach(function (lap, index) {
+                            if (lap < fastestLapTime) {
+                                fastestLapTime = lap;
+                                fastestLap = index + 1;
+                            }
+                            totalTime += lap;
+                        });
+                        this.totalTime = totalTime;
+                        this.averageLapTime = Number(totalTime) / this.lapTimes.length;
+                        this.fastestLap = fastestLap;
+                        this.fastestLapTime = fastestLapTime;
+                    });
+                    if (this.isRaceRunning()) {
+                        this.smartAudio.play('lap');
+                        this.zone.run(() => {
+                            this.currentLap++;
+                        });
+                    }
+                }
+            } else if (MessageData.isMessageData(data)) {
+                me.fltutil.showToast(data.message);
+            }
+        });
+    }
+
     ionViewDidEnter() {
         this.doConnect();
+        this.subscribe();
 
         this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
             if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {

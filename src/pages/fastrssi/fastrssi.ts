@@ -5,6 +5,8 @@ import {BluetoothPage} from '../bluetooth/bluetooth';
 import {NgZone} from '@angular/core';
 import {FltutilProvider} from '../../providers/fltutil/fltutil'
 import {FltunitProvider} from '../../providers/fltunit/fltunit'
+import * as RssiData from '../../models/rssidata'
+import * as MessageData from '../../models/messagedata'
 
 @Component({
     selector: 'page-fastrssi',
@@ -32,6 +34,7 @@ export class FastrssiPage {
         let me = this;
         if (this.fastrssiRunning) {
             this.fltunit.stopFastRssi().then(function() {
+                this.rssi = 0;
                 me.fastrssiRunning = false;
             }).catch(function (msg: string) {
                 me.fltutil.showToast("Cannot stop fastrssi: " + msg);
@@ -55,15 +58,14 @@ export class FastrssiPage {
         let me = this;
         this.fltunit.getObservable().subscribe(data => {
             me.fltutil.hideLoader();
-            if (data.type == "message") {
+            if (MessageData.isMessageData(data)) {
                 me.fltutil.showToast(data.message);
-            } else if (data.type == "newRssiValue") {
+            } else if (RssiData.isRssiData(data)) {
                 me.zone.run(() => {
                     if (data.rssi == NaN) {
                         data.rssi = 0;
                     }
                     me.rssi = data.rssi;
-                    
                 });
             }
         });

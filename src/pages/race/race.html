@@ -20,7 +20,7 @@
                 State:
             </ion-col>
             <ion-col>
-                {{raceStateText}}
+                <b>{{raceStateText}}</b>
             </ion-col>
         </ion-row>
         <ion-row>
@@ -71,6 +71,7 @@
             </ion-col>
         </ion-row>
     </ion-grid>
+    <hr />
     <div [hidden]="currentLap > 0">not finished a lap yet, waiting for first lap</div>
     <div *ngFor="let lap of lapTimes; let i = index">Lap {{i + 1}}: {{convertTime(lap)}} (RSSI: {{lapRssis[i]}})</div>
 

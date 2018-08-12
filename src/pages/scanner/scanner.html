@@ -19,6 +19,7 @@
 <ion-content padding>
     <p [hidden]="scanRunning">Press Scan to start channel scan!</p>
     <p [hidden]="!scanRunning">Press Stop to stop channel scan!</p>
+    <p><i>These are raw values, they are higher than the RSSI values displayed everywhere else!</i></p>
     <hr />
     <p>Got maximum RSSI ({{maxRssi}}) on {{maxChannel}} ({{maxFreq}} MHz).</p>
     <p *ngFor="let channel of channels">{{channel.channel}} ({{channel.freq}} MHz): {{channel.rssi}}</p>

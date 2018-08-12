@@ -5,6 +5,8 @@ import {BluetoothPage} from '../bluetooth/bluetooth';
 import {NgZone} from '@angular/core';
 import {FltutilProvider} from '../../providers/fltutil/fltutil'
 import {FltunitProvider} from '../../providers/fltunit/fltunit'
+import * as MessageData from '../../models/messagedata'
+import * as ScanData from '../../models/scandata'
 
 @Component({
     selector: 'page-scanner',
@@ -69,9 +71,9 @@ export class ScannerPage {
         let me = this;
         this.fltunit.getObservable().subscribe(data => {
             me.fltutil.hideLoader();
-            if (data.type == "message") {
+            if (MessageData.isMessageData(data)) {
                 me.fltutil.showToast(data.message);
-            } else if (data.type == "newScanData") {
+            } else if (ScanData.isScanData(data)) {
                 for (let i: number = 0; i < me.fltutil.getFrequencyTable().length; i++) {
                     if (me.channels[i].freq == data.freq) {
                         me.zone.run(() => {

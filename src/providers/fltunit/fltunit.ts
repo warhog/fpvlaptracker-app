@@ -10,6 +10,7 @@ import {StateData} from '../../models/statedata'
 import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
 import {ScanData} from '../../models/scandata';
+import {LapData} from '../../models/lapdata';
 
 enum FLT_UNIT_STATES {
     DISCONNECTED = 0,
@@ -207,6 +208,9 @@ export class FltunitProvider {
             } else if (data.startsWith("RUNTIME: ")) {
                 let runtimeData: RuntimeData = JSON.parse(data.substring(9, data.length));
                 this.observer.next(runtimeData);
+            } else if (data.startsWith("LAP: ")) {
+                let lapData: LapData = JSON.parse(data.substring(5));
+                this.observer.next(lapData);
             } else if (data.startsWith("SCAN: ")) {
                 if (data.startsWith("SCAN: started")) {
                     this.fltutil.showToast("Scan started");
