@@ -43,7 +43,7 @@ export class FltutilProvider {
             5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945, // Band E
             5740, 5760, 5780, 5800, 5820, 5840, 5860, 5880, // Band F / Airwave
             5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917, // Band C / Immersion Raceband
-            5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621  // Band Low Raceband / D / 5.3
+            5362, 5399, 5436, 5473, 5510, 5547, 5584, 5621  // Band D / 5.3
         ];
         return frequencies;
     }
@@ -55,7 +55,7 @@ export class FltutilProvider {
             "E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", // Band E
             "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", // Band F
             "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", // Band C / Immersion Raceband
-            "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", // Band Low Raceband / D / 5.3
+            "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", // Band D / 5.3
         ];
         return frequencyNameTable;
     }
