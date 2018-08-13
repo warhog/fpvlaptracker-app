@@ -11,6 +11,7 @@ import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
 import {ScanData} from '../../models/scandata';
 import {LapData} from '../../models/lapdata';
+import { SmartAudioProvider } from '../smart-audio/smart-audio';
 
 enum FLT_UNIT_STATES {
     DISCONNECTED = 0,
@@ -37,7 +38,12 @@ export class FltunitProvider {
     private observable: any;
     private observer: any;
 
-    constructor(private bluetoothSerial: BluetoothSerial, private fltutil: FltutilProvider, private storage: Storage) {
+    constructor(
+        private bluetoothSerial: BluetoothSerial,
+        private fltutil: FltutilProvider,
+        private storage: Storage,
+        private smartAudioProvider: SmartAudioProvider
+        ) {
         this.observable = Observable.create(observer => {
             this.observer = observer;
         });
@@ -235,6 +241,9 @@ export class FltunitProvider {
             } else if (data.startsWith("LAP: ")) {
                 let lapData: LapData = JSON.parse(data.substring(5));
                 this.observer.next(lapData);
+            } else if (data.startsWith("CALIBRATION: ")) {
+                this.fltutil.showToast("Calibration done");
+                this.smartAudioProvider.play("calibrationdone");
             } else if (data.startsWith("SCAN: ")) {
                 if (data.startsWith("SCAN: started")) {
                     this.fltutil.showToast("Scan started");
@@ -250,8 +259,8 @@ export class FltunitProvider {
                     let scanData: ScanData = { freq: Number(parts[0]), rssi: Number(parts[1]) };
                     this.observer.next(scanData);
                 }
-            //  } else {
-            //      this.fltutil.showToast("unknown data: " + data);
+            // } else {
+            //     this.fltutil.showToast("unknown data: " + data);
             }
         } else if (this.isWaitingForSave()) {
             this.state = FLT_UNIT_STATES.VALIDATED;
