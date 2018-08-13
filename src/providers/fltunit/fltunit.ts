@@ -32,6 +32,7 @@ export class FltunitProvider {
     private version: string = "";
     private state: number = FLT_UNIT_STATES.DISCONNECTED;
     private deviceName: string = "";
+    private timeout: any = null;
 
     private observable: any;
     private observer: any;
@@ -124,15 +125,30 @@ export class FltunitProvider {
         this.bluetoothSerial.disconnect();
     }
 
-    simpleRequest(requestString) : Promise<string> {
+    timeoutHandler() {
+        this.fltutil.hideLoader();
+        this.fltutil.showToast("Timeout, please retry");
+    }
+
+    simpleRequest(requestString: string, timeout: number = 0) : Promise<string> {
+        let me = this;
         return new Promise((resolve, reject) => {
-            this.bluetoothSerial.write(requestString + '\n')
-                .then(function () {
+            if (!this.isConnected()) {
+                me.clearTimeout();
+                reject("Not connected");
+            } else {
+                this.bluetoothSerial.write(requestString + '\n').then(function () {
+                    if (timeout > 0 && me.timeout === null) {
+                        me.timeout = setTimeout(function() {
+                            me.timeoutHandler();
+                        }, timeout);
+                    }
                     resolve();
-                })
-                .catch(function (msg: string) {
+                }).catch(function (msg: string) {
+                    me.clearTimeout();
                     reject(msg);
                 });
+            }
         });
     }
 
@@ -153,7 +169,7 @@ export class FltunitProvider {
     }
 
     loadConfigData() : Promise<string> {
-        return this.simpleRequest("GET config");
+        return this.simpleRequest("GET config", 5000);
     }
 
     loadRssi() : Promise<string> {
@@ -178,7 +194,14 @@ export class FltunitProvider {
             });
     }
 
+    clearTimeout() {
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+        }
+    }
+
     reboot() {
+        this.clearTimeout();
         let me = this;
         this.simpleRequest("REBOOT").then(function() {
             me.fltutil.showToast("Rebooting unit, this may take up to 1 minute.");
@@ -188,6 +211,7 @@ export class FltunitProvider {
     }
 
     onReceive(data: string) {
+        this.clearTimeout();
         if (this.isWaitingForValidTest()) {
             this.state = FLT_UNIT_STATES.VALID_TEST;
             if (data.startsWith("VERSION: ")) {
