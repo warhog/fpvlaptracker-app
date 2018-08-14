@@ -79,7 +79,10 @@ export class FltunitProvider {
     saveData(configData: ConfigData) {
         this.setState(FLT_UNIT_STATES.CHECK_SAVE_SUCCESS);
         let me = this;
-        this.bluetoothSerial.write("PUT config " + JSON.stringify(configData) + "\n").catch(function (msg) {
+        configData.minimumLapTime = configData.minimumLapTime * 1000;
+        this.bluetoothSerial.write("PUT config " + JSON.stringify(configData) + "\n").then(function() {
+            configData.minimumLapTime = configData.minimumLapTime / 1000;
+        }).catch(function (msg) {
             me.observer.next({type: "message", message: "Cannot save: " + msg});
             me.state = FLT_UNIT_STATES.VALIDATED;
         });
@@ -228,6 +231,7 @@ export class FltunitProvider {
         } else if (this.isValidated()) {
             if (data.startsWith("CONFIG: ")) {
                 let config: ConfigData = JSON.parse(data.substring(8, data.length));
+                config.minimumLapTime = config.minimumLapTime / 1000;
                 this.observer.next(config);
             } else if (data.startsWith("RSSI: ")) {
                 let rssiData: RssiData = { rssi: Number(data.substring(6, data.length)) };

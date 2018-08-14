@@ -114,9 +114,9 @@
         <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">Minimum lap time</h3>
-                <div>The duration of the lap detection lock in milliseconds.</div>
+                <div>The duration of the lap detection lock in seconds.</div>
             </ion-label>
-            <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="configData.minimumLapTime"></ion-input>
+            <ion-input type="number" min="1" max="300" step="1" value="" [(ngModel)]="configData.minimumLapTime"></ion-input>
         </ion-item>
 
         <ion-item text-wrap>
