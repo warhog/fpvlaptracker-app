@@ -4,11 +4,11 @@
             Channel Scanner
         </ion-title>
         <ion-buttons end>
-            <button [hidden]="scanRunning" ion-button icon-left (click)="startScanChannels()">
+            <button [hidden]="scanRunning" ion-button icon-start (click)="startScanChannels()">
                 <ion-icon name="stats"></ion-icon> 
                 Scan
             </button>
-            <button [hidden]="!scanRunning" ion-button icon-left (click)="stopScanChannels()">
+            <button [hidden]="!scanRunning" ion-button icon-start (click)="stopScanChannels()">
                 <ion-icon name="hand"></ion-icon> 
                 Stop
         </button>

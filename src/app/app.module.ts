@@ -2,6 +2,7 @@ import {NgModule, ErrorHandler} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
 import {FpvlaptrackerApp} from './app.component';
+import {HttpClientModule} from '@angular/common/http';
 
 import {BluetoothPage} from '../pages/bluetooth/bluetooth';
 import {SettingsPage} from '../pages/settings/settings';
@@ -37,6 +38,7 @@ import {FltunitProvider} from '../providers/fltunit/fltunit';
     ],
     imports: [
         BrowserModule,
+        HttpClientModule,
         IonicModule.forRoot(FpvlaptrackerApp),
         IonicStorageModule.forRoot()
     ],

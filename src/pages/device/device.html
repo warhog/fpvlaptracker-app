@@ -4,11 +4,11 @@
             {{deviceName}}
         </ion-title>
         <ion-buttons end>
-            <button ion-button icon-left (click)="requestData()">
+            <button ion-button icon-start (click)="requestData()">
                     <ion-icon name="refresh"></ion-icon> 
                 Reload
             </button>
-            <button ion-button icon-left (click)="saveData()">
+            <button ion-button icon-start (click)="saveData()">
                     <ion-icon name="checkmark"></ion-icon> 
                 Save
             </button>
@@ -84,7 +84,7 @@
             <ion-input type="number" disabled value="" [(ngModel)]="rssi"></ion-input>
         </ion-item>
         <ion-item>
-            <button ion-button icon-left (click)="requestRssi()">
+            <button ion-button icon-start (click)="requestRssi()">
                     <ion-icon name="wifi"></ion-icon> 
                 Update RSSI
             </button>
@@ -94,7 +94,7 @@
             <ion-input type="text" disabled value="" [(ngModel)]="configData.state"></ion-input>
         </ion-item>
         <ion-item>
-            <button ion-button icon-left (click)="requestState()">
+            <button ion-button icon-start (click)="requestState()">
                     <ion-icon name="pulse"></ion-icon> 
                 Update state
             </button>
@@ -132,7 +132,7 @@
             <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
         </ion-item>
         <ion-item>
-            <button ion-button icon-left (click)="requestTriggerValue()">
+            <button ion-button icon-start (click)="requestTriggerValue()">
                     <ion-icon name="pulse"></ion-icon> 
                 Update trigger value
             </button>
@@ -143,7 +143,7 @@
         <h2>Fast RSSI monitor</h2>
         <ion-item>
             <p>Open the RSSI monitor to display live RSSI values.</p>
-            <button ion-button icon-left (click)="gotoFastRssi()">
+            <button ion-button icon-start (click)="gotoFastRssi()">
                     <ion-icon name="stats"></ion-icon> 
                 Fast RSSI monitor
             </button>
@@ -169,7 +169,7 @@
         <h2>Misc</h2>
         <ion-item>
             <p>Reboot the tracker unit.</p>
-            <button ion-button icon-left (click)="reboot()">
+            <button ion-button icon-start (click)="reboot()">
                 <ion-icon name="build"></ion-icon> 
                 Reboot unit
             </button>

@@ -4,7 +4,7 @@
             Settings
         </ion-title>
         <ion-buttons end>
-            <button ion-button icon-left (click)="saveValues()">
+            <button ion-button icon-start (click)="saveValues()">
                     <ion-icon name="checkmark"></ion-icon> 
                 Save
             </button>
@@ -16,7 +16,7 @@
     <ion-list>
         <h2>Selected node</h2>
         <p>Currently selected node: {{bluetoothDevice}}</p>
-        <button ion-button icon-left (click)="gotoBluetoothSelection()">
+        <button ion-button icon-start (click)="gotoBluetoothSelection()">
             <ion-icon name="bluetooth"></ion-icon> 
             Select bluetooth device
         </button>
@@ -41,7 +41,7 @@
         <h2>RSSI scanner</h2>
         <ion-item>
             <p>Scan all available channels for their signal strength.</p>
-            <button ion-button icon-left (click)="gotoScanner()">
+            <button ion-button icon-start (click)="gotoScanner()">
                     <ion-icon name="stats"></ion-icon> 
                 Scan all channels
             </button>

@@ -141,7 +141,7 @@ export class FltunitProvider {
         return new Promise((resolve, reject) => {
             if (!this.isConnected()) {
                 me.clearTimeout();
-                reject("Not connected");
+                reject("Not connected to unit");
             } else {
                 this.bluetoothSerial.write(requestString + '\n').then(function () {
                     if (timeout > 0 && me.timeout === null) {
