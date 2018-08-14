@@ -11,6 +11,7 @@ import * as RuntimeData from '../../models/runtimedata'
 import * as StateData from '../../models/statedata'
 import * as RssiData from '../../models/rssidata'
 import * as MessageData from '../../models/messagedata'
+import { ScannerPage } from '../scanner/scanner';
 
 @Component({
     selector: 'page-device',
@@ -98,6 +99,10 @@ export class DevicePage {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });
+    }
+
+    gotoScanner() {
+        this.navCtrl.push(ScannerPage);
     }
 
     subscribe() {

@@ -78,14 +78,22 @@
               <ion-option value="5584">Band D 7</ion-option>
               <ion-option value="5621">Band D 8</ion-option>
             </ion-select>
-          </ion-item>
+        </ion-item>
+        <ion-item text-wrap>
+            <h3 style="padding-top: 5px;">RSSI scanner</h3>
+            <div>Scan all available channels for their signal strength.</div>
+            <button ion-button icon-start (click)="gotoScanner()">
+                <ion-icon name="stats"></ion-icon> 
+                Scan all channels
+            </button>
+        </ion-item>
         <ion-item>
             <ion-label stacked>RSSI</ion-label>
             <ion-input type="number" disabled value="" [(ngModel)]="rssi"></ion-input>
         </ion-item>
         <ion-item>
             <button ion-button icon-start (click)="requestRssi()">
-                    <ion-icon name="wifi"></ion-icon> 
+                <ion-icon name="wifi"></ion-icon> 
                 Update RSSI
             </button>
         </ion-item>
@@ -95,40 +103,51 @@
         </ion-item>
         <ion-item>
             <button ion-button icon-start (click)="requestState()">
-                    <ion-icon name="pulse"></ion-icon> 
+                <ion-icon name="pulse"></ion-icon> 
                 Update state
             </button>
-        </ion-item>
-
-        <ion-item>
-            <h3>RSSI calibration offset</h3>
-            <p>The RSSI offset that is substracted during calibration run. Improves lap detection but can add jitter to lap times.</p>
-            <ion-label stacked>Calibration Offset</ion-label>
-            <ion-input type="number" min="0" max="1000" step="1" value="" [(ngModel)]="configData.calibrationOffset"></ion-input>
         </ion-item>
     </ion-list>
 
     <h2>Lap detection</h2>
-    <p>The duration of the lap detection lock in milliseconds.</p>
     <ion-list>
-        <ion-item>
-            <ion-label stacked>Minimum lap time</ion-label>
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Minimum lap time</h3>
+                <div>The duration of the lap detection lock in milliseconds.</div>
+            </ion-label>
             <ion-input type="number" min="1000" max="60000" step="100" value="" [(ngModel)]="configData.minimumLapTime"></ion-input>
         </ion-item>
 
-        <ion-item>
-            <p>The trigger threshold defines the RSSI window in which the lap detection is active.</p>
-            <ion-label stacked>RSSI trigger threshold</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">RSSI trigger threshold</h3>
+                <div>The trigger threshold defines the RSSI window in which the lap detection is active.</div>
+            </ion-label>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
         </ion-item>
 
-        <ion-item>
-            <ion-label stacked>RSSI trigger threshold during calibration</ion-label>
-            <ion-input type="number" min="0" max="1024" step="1" value="" [(ngModel)]="configData.triggerThresholdCalibration"></ion-input>
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">RSSI trigger <b>calibration</b> threshold</h3>
+                <div>The RSSI trigger threshold during calibration state.</div>
+            </ion-label>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThresholdCalibration"></ion-input>
         </ion-item>
 
-        <ion-item>
-            <ion-label stacked>Current trigger value</ion-label>
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">RSSI calibration offset</h3>
+                <div>The RSSI offset that is substracted from found peek during calibration. Improves lap detection but can add jitter to lap times.</div>
+            </ion-label>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.calibrationOffset"></ion-input>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Current trigger value</h3>
+                <div>The RSSI value that triggers a new lap detection.</div>
+            </ion-label>
             <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
         </ion-item>
         <ion-item>
@@ -151,7 +170,7 @@
     </ion-list>
 
     <h2>WiFi</h2>
-    <p><b>Only non standalone mode!</b><br />The WiFi network this tracker unit is connecting to.</p>
+    <p><b>Only non standalone mode!</b><br />Credentials for the WiFi network this tracker unit is connecting to.</p>
     <ion-list>
         <ion-item>
             <ion-label stacked>SSID</ion-label>
