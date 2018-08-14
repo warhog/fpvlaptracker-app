@@ -92,7 +92,9 @@ export class DevicePage {
 
     doConnect() {
         let me = this;
-        this.fltunit.connect().catch(function (errMsg: string) {
+        this.fltunit.connect().then(function() {
+            me.deviceName = me.fltunit.getDeviceName();
+        }).catch(function (errMsg: string) {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });

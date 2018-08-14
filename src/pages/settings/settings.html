@@ -15,11 +15,13 @@
 <ion-content padding>
     <ion-list>
         <h2>Selected node</h2>
-        <p>Currently selected node: {{bluetoothDevice}}</p>
-        <button ion-button icon-start (click)="gotoBluetoothSelection()">
-            <ion-icon name="bluetooth"></ion-icon> 
-            Select bluetooth device
-        </button>
+        <ion-item>
+            <p>Currently selected node: {{bluetoothDevice}}</p>
+            <button ion-button icon-start (click)="gotoBluetoothSelection()">
+                <ion-icon name="bluetooth"></ion-icon> 
+                Select bluetooth device
+            </button>
+        </ion-item>
     </ion-list>
     <hr />
 
