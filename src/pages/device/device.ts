@@ -32,8 +32,6 @@ export class DevicePage {
         triggerValue: 0
     };
     private rssi: number = 0;
-
-    // linter complains about not used but is used in html
     private deviceName: string = "";
 
     constructor(

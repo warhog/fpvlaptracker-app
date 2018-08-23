@@ -137,6 +137,7 @@ export class FltunitProvider {
     timeoutHandler() {
         this.fltutil.hideLoader();
         this.fltutil.showToast("Timeout, please retry");
+        this.disconnect();
     }
 
     simpleRequest(requestString: string, timeout: number = 0) : Promise<string> {
@@ -223,6 +224,7 @@ export class FltunitProvider {
         this.clearTimeout();
         if (this.isWaitingForValidTest()) {
             this.state = FLT_UNIT_STATES.VALID_TEST;
+
             if (data.startsWith("VERSION: ")) {
                 this.state = FLT_UNIT_STATES.VALIDATED;
                 this.version = data.substring(9, data.length);
