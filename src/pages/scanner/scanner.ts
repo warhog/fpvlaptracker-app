@@ -75,7 +75,7 @@ export class ScannerPage {
                 me.fltutil.showToast(data.message);
             } else if (ScanData.isScanData(data)) {
                 for (let i: number = 0; i < me.fltutil.getFrequencyTable().length; i++) {
-                    if (me.channels[i].freq == data.freq) {
+                    if (me.channels[i].freq == data.frequency) {
                         me.zone.run(() => {
                             me.channels[i].rssi = data.rssi;
                         });

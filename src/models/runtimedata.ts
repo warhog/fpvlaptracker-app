@@ -1,8 +1,9 @@
 export interface RuntimeData {
+    type: string,
     triggerValue: number;
 }
 
 
 export function isRuntimeData(arg: any) : arg is RuntimeData {
-    return arg.triggerValue !== undefined;
+    return arg.type !== undefined && arg.type == "runtime";
 }

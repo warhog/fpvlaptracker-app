@@ -6,12 +6,15 @@ import {Observable} from 'rxjs/Observable';
 import {Storage} from '@ionic/storage';
 import {RuntimeData} from '../../models/runtimedata';
 import {ConfigData} from '../../models/configdata';
-import {StateData} from '../../models/statedata'
+import {StateData, isRssiData, isCalibrationData} from '../../models/statedata'
 import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
-import {ScanData} from '../../models/scandata';
+import {ScanData, isScanData} from '../../models/scandata';
 import {LapData} from '../../models/lapdata';
 import { SmartAudioProvider } from '../smart-audio/smart-audio';
+import { getDataType } from '../../models/type';
+import { VersionData } from '../../models/versiondata';
+import { AlarmData } from '../../models/alarmdata';
 
 enum FLT_UNIT_STATES {
     DISCONNECTED = 0,
@@ -225,46 +228,45 @@ export class FltunitProvider {
         if (this.isWaitingForValidTest()) {
             this.state = FLT_UNIT_STATES.VALID_TEST;
 
-            if (data.startsWith("VERSION: ")) {
+            if (getDataType(data) == "version") {
                 this.state = FLT_UNIT_STATES.VALIDATED;
-                this.version = data.substring(9, data.length);
+                let versionData: VersionData = JSON.parse(data);
+                this.version = versionData.version;
                 this.loadConfigData();
             }
         } else if (this.isValidated()) {
-            if (data.startsWith("CONFIG: ")) {
-                let config: ConfigData = JSON.parse(data.substring(8, data.length));
+            let dataType: string = getDataType(data);
+            if (dataType == "config") {
+                let config: ConfigData = JSON.parse(data);
                 config.minimumLapTime = config.minimumLapTime / 1000;
                 this.observer.next(config);
-            } else if (data.startsWith("RSSI: ")) {
-                let rssiData: RssiData = { rssi: Number(data.substring(6, data.length)) };
+            } else if (dataType == "rssi") {
+                let rssiData: RssiData = JSON.parse(data);
                 this.observer.next(rssiData);
-            } else if (data.startsWith("STATE: ")) {
-                let stateData: StateData = { state: data.substring(7, data.length) };
-                this.observer.next(stateData);
-            } else if (data.startsWith("RUNTIME: ")) {
-                let runtimeData: RuntimeData = JSON.parse(data.substring(9, data.length));
-                this.observer.next(runtimeData);
-            } else if (data.startsWith("LAP: ")) {
-                let lapData: LapData = JSON.parse(data.substring(5));
-                this.observer.next(lapData);
-            } else if (data.startsWith("CALIBRATION: ")) {
-                this.fltutil.showToast("Calibration done");
-                this.smartAudioProvider.play("calibrationdone");
-            } else if (data.startsWith("SCAN: ")) {
-                if (data.startsWith("SCAN: started")) {
-                    this.fltutil.showToast("Scan started");
-                } else if (data.startsWith("SCAN: stopped")) {
-                    this.fltutil.showToast("Scan stopped");
+            } else if (dataType == "state") {
+                let stateData: StateData = JSON.parse(data);
+                if (isScanData(stateData)) {
+                    this.fltutil.showToast("Scan " + stateData.scan, 2000);
+                } else if (isRssiData(stateData)) {
+                    this.fltutil.showToast("Fast RSSI " + stateData.rssi, 2000);
+                } else if (isCalibrationData(stateData)) {
+                    this.fltutil.showToast("Calibration done", 3000);
+                    this.smartAudioProvider.play("calibrationdone");
                 } else {
-                    let channelData: string = data.substring(6, data.length);
-                    let parts: string[] = channelData.split("=");
-                    if (parts.length != 2) {
-                        this.fltutil.showToast("Scan split error");
-                        return;
-                    }
-                    let scanData: ScanData = { freq: Number(parts[0]), rssi: Number(parts[1]) };
-                    this.observer.next(scanData);
+                    this.observer.next(stateData);
                 }
+            } else if (dataType == "runtime") {
+                let runtimeData: RuntimeData = JSON.parse(data);
+                this.observer.next(runtimeData);
+            } else if (dataType == "lap") {
+                let lapData: LapData = JSON.parse(data);
+                this.observer.next(lapData);
+            } else if (dataType == "scan") {
+                let scanData: ScanData = JSON.parse(data);
+                this.observer.next(scanData);
+            } else if (dataType == "alarm") {
+                let alarmData: AlarmData = JSON.parse(data);
+                this.fltutil.showLoader(alarmData.msg);
             // } else {
             //     this.fltutil.showToast("unknown data: " + data);
             }
@@ -273,11 +275,11 @@ export class FltunitProvider {
             if (data.startsWith("SETCONFIG: ")) {
                 let result: string = data.substring(11);
                 if (result.trim() == "OK") {
-                    let messageData: MessageData = { message: "Successfully saved" };
+                    let messageData: MessageData = { type: "message", message: "Successfully saved" };
                     this.observer.next(messageData);
                     this.loadConfigData();
                 } else {
-                    let messageData: MessageData = { message: "Cannot save to device!" };
+                    let messageData: MessageData = { type: "message", message: "Cannot save to device!" };
                     this.observer.next(messageData);
                 }
             }

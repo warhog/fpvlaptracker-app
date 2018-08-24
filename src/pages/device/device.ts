@@ -21,6 +21,7 @@ import { ScannerPage } from '../scanner/scanner';
 export class DevicePage {
 
     private configData: ConfigData.ConfigData = {
+        type: "config",
         ssid: "",
         password: "",
         frequency: 0,
@@ -29,7 +30,8 @@ export class DevicePage {
         triggerThresholdCalibration: 0,
         calibrationOffset: 0,
         state: "",
-        triggerValue: 0
+        triggerValue: 0,
+        voltage: 0
     };
     private rssi: number = 0;
     private deviceName: string = "";

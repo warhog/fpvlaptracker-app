@@ -28,10 +28,10 @@ export class FltutilProvider {
         this.loader.dismiss();
     }
 
-    showToast(errMsg: string) {
+    showToast(errMsg: string, time: number = 5000) {
         let toast = this.toastCtrl.create({
             message: errMsg,
-            duration: 5000
+            duration: time
         });
         toast.present();
     }

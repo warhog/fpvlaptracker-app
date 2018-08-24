@@ -36,10 +36,6 @@ export class SettingsPage {
         this.navCtrl.push(BluetoothPage);
     }
 
-    gotoScanner() {
-        this.navCtrl.push(ScannerPage);
-    }
-
     saveValues() {
         this.storage.set("race.numberOfLaps", this.numberOfLaps);
         this.storage.set("race.keepAwakeDuringRace", this.keepAwakeDuringRace);

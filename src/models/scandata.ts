@@ -1,8 +1,9 @@
 export interface ScanData {
-    freq: number,
+    type: string,
+    frequency: number,
     rssi: number;
 }
 
 export function isScanData(arg: any) : arg is ScanData {
-    return arg.freq !== undefined && arg.rssi !== undefined;
+    return arg.type !== undefined && arg.type == "scan";
 }

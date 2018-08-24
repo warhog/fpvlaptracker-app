@@ -1,4 +1,5 @@
 export interface ConfigData {
+    type: string,
     ssid: string,
     password: string,
     frequency: number,
@@ -7,10 +8,11 @@ export interface ConfigData {
     triggerThresholdCalibration: number,
     calibrationOffset: number,
     state: string,
-    triggerValue: number
+    triggerValue: number,
+    voltage: number
 }
 
 
 export function isConfigData(arg: any) : arg is ConfigData {
-    return arg.ssid !== undefined && arg.password !== undefined && arg.triggerThresholdCalibration !== undefined;
+    return arg.type !== undefined && arg.type == "config";
 }

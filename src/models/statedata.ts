@@ -1,4 +1,5 @@
 export interface StateData {
+    type: string,
     state?: string;
     rssi?: string,
     scan?: string,
@@ -6,17 +7,17 @@ export interface StateData {
 }
 
 export function isStateData(arg: any) : arg is StateData {
-    return arg.state !== undefined;
+    return arg.type !== undefined && arg.type == "state";
 }
 
 export function isRssiData(arg: any) : arg is StateData {
-    return arg.rssi !== undefined;
+    return arg.type !== undefined && arg.type == "state";
 }
 
 export function isScanData(arg: any) : arg is StateData {
-    return arg.scan !== undefined;
+    return arg.type !== undefined && arg.type == "state";
 }
 
 export function isCalibrationData(arg: any) : arg is StateData {
-    return arg.calibration !== undefined;
+    return arg.type !== undefined && arg.type == "state";
 }
