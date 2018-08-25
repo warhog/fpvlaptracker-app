@@ -266,7 +266,7 @@ export class FltunitProvider {
                 this.observer.next(scanData);
             } else if (dataType == "alarm") {
                 let alarmData: AlarmData = JSON.parse(data);
-                this.fltutil.showLoader(alarmData.msg);
+                this.fltutil.showToast(alarmData.msg, 10000);
             // } else {
             //     this.fltutil.showToast("unknown data: " + data);
             }
