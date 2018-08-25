@@ -1,23 +1,23 @@
 export interface StateData {
     type: string,
-    state?: string;
+    state?: string,
     rssi?: string,
     scan?: string,
     calibration?: string
 }
 
 export function isStateData(arg: any) : arg is StateData {
-    return arg.type !== undefined && arg.type == "state";
+    return arg.type !== undefined && arg.type == "state" && arg.state !== undefined;
 }
 
-export function isRssiData(arg: any) : arg is StateData {
-    return arg.type !== undefined && arg.type == "state";
+export function isStateScanData(arg: any) : arg is StateData {
+    return arg.type !== undefined && arg.type == "state" && arg.scan !== undefined;
 }
 
-export function isScanData(arg: any) : arg is StateData {
-    return arg.type !== undefined && arg.type == "state";
+export function isStateRssiData(arg: any) : arg is StateData {
+    return arg.type !== undefined && arg.type == "state" && arg.rssi !== undefined;
 }
 
-export function isCalibrationData(arg: any) : arg is StateData {
-    return arg.type !== undefined && arg.type == "state";
+export function isStateCalibrationData(arg: any) : arg is StateData {
+    return arg.type !== undefined && arg.type == "state" && arg.calibration !== undefined;
 }

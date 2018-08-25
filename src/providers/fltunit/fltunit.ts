@@ -6,10 +6,10 @@ import {Observable} from 'rxjs/Observable';
 import {Storage} from '@ionic/storage';
 import {RuntimeData} from '../../models/runtimedata';
 import {ConfigData} from '../../models/configdata';
-import {StateData, isRssiData, isCalibrationData} from '../../models/statedata'
+import {StateData, isStateScanData, isStateRssiData, isStateCalibrationData} from '../../models/statedata'
 import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
-import {ScanData, isScanData} from '../../models/scandata';
+import {ScanData} from '../../models/scandata';
 import {LapData} from '../../models/lapdata';
 import { SmartAudioProvider } from '../smart-audio/smart-audio';
 import { getDataType } from '../../models/type';
@@ -245,14 +245,18 @@ export class FltunitProvider {
                 this.observer.next(rssiData);
             } else if (dataType == "state") {
                 let stateData: StateData = JSON.parse(data);
-                if (isScanData(stateData)) {
+                // TODO strange behavior, if everything in one if/elseif construct, stateData.rssi is not found?
+                if (isStateScanData(stateData)) {
                     this.fltutil.showToast("Scan " + stateData.scan, 2000);
-                } else if (isRssiData(stateData)) {
+                }
+                if (isStateRssiData(stateData)) {
                     this.fltutil.showToast("Fast RSSI " + stateData.rssi, 2000);
-                } else if (isCalibrationData(stateData)) {
+                }
+                if (isStateCalibrationData(stateData)) {
                     this.fltutil.showToast("Calibration done", 3000);
                     this.smartAudioProvider.play("calibrationdone");
-                } else {
+                }
+                if (!isStateScanData(stateData) && !isStateRssiData(stateData) && !isStateCalibrationData(stateData)) {
                     this.observer.next(stateData);
                 }
             } else if (dataType == "runtime") {

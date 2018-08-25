@@ -12,6 +12,7 @@ import * as StateData from '../../models/statedata'
 import * as RssiData from '../../models/rssidata'
 import * as MessageData from '../../models/messagedata'
 import { ScannerPage } from '../scanner/scanner';
+import { HomePage } from '../home/home';
 
 @Component({
     selector: 'page-device',
@@ -47,6 +48,7 @@ export class DevicePage {
 
     reboot() {
         this.fltunit.reboot();
+        this.navCtrl.push(HomePage);
     }
 
     saveData() {
