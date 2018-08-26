@@ -9,7 +9,8 @@ export interface ConfigData {
     calibrationOffset: number,
     state: string,
     triggerValue: number,
-    voltage: number
+    voltage: number,
+    uptime: number
 }
 
 

@@ -122,7 +122,7 @@
         <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">RSSI trigger threshold</h3>
-                <div>The trigger threshold defines the RSSI window in which the lap detection is active.</div>
+                <div>The trigger threshold defines the RSSI window in which the lap detection is active. The lap detection ends if RSSI is below trigger value (see below) minus trigger threshold.</div>
             </ion-label>
             <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
         </ion-item>
@@ -130,7 +130,7 @@
         <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">RSSI trigger <b>calibration</b> threshold</h3>
-                <div>The RSSI trigger threshold during calibration state.</div>
+                <div>The RSSI trigger threshold during calibration state. The calibration ends if RSSI is below trigger value (see below) minus calibration trigger threshold.</div>
             </ion-label>
             <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThresholdCalibration"></ion-input>
         </ion-item>
@@ -156,12 +156,6 @@
                 Update trigger value
             </button>
         </ion-item>
-    </ion-list>
-    <ion-list>
-        <ion-label stacked>
-            <h4 style="padding-top: 5px;">Tracker battery voltage</h4>
-        </ion-label>
-        <div>{{configData.voltage | number:'2.1-1'}} Volt</div>
     </ion-list>
 
     <ion-list>
@@ -199,6 +193,10 @@
                 Reboot unit
             </button>
         </ion-item>
+    </ion-list>
+    <ion-list>
+        <div>Tracker battery voltage: {{configData.voltage | number:'2.1-1'}} Volt</div>
+        <div>Uptime: {{configData.uptime}} seconds</div>
     </ion-list>
 
 </ion-content>

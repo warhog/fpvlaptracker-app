@@ -32,7 +32,8 @@ export class DevicePage {
         calibrationOffset: 0,
         state: "",
         triggerValue: 0,
-        voltage: 0
+        voltage: 0,
+        uptime: 0
     };
     private rssi: number = 0;
     private deviceName: string = "";
