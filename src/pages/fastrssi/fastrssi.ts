@@ -43,6 +43,7 @@ export class FastrssiPage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.fltunit.disconnect();
     }
 
     doConnect() {

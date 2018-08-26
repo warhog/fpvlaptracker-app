@@ -57,6 +57,7 @@ export class ScannerPage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.fltunit.disconnect();
     }
 
     doConnect() {

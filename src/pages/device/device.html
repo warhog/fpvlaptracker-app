@@ -112,6 +112,10 @@
     <h2>Lap detection</h2>
     <ion-list>
         <ion-item text-wrap>
+            <button ion-button icon-start (click)="gotoHelp()">Open the help</button>
+        </ion-item>
+
+        <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">Minimum lap time</h3>
                 <div>The duration of the lap detection lock in seconds.</div>
@@ -120,9 +124,23 @@
         </ion-item>
 
         <ion-item text-wrap>
+                <ion-label stacked>
+                    <h3 style="padding-top: 5px;">Current trigger value</h3>
+                    <div>The RSSI value that triggers a new lap detection.</div>
+                </ion-label>
+                <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
+            </ion-item>
+            <ion-item>
+                <button ion-button icon-start (click)="requestTriggerValue()">
+                        <ion-icon name="pulse"></ion-icon> 
+                    Update trigger value
+                </button>
+            </ion-item>
+
+        <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">RSSI trigger threshold</h3>
-                <div>The trigger threshold defines the RSSI window in which the lap detection is active. The lap detection ends if RSSI is below trigger value (see below) minus trigger threshold.</div>
+                <div>The trigger threshold defines the RSSI window in which the lap detection is active. The lap detection ends if RSSI is below trigger value minus trigger threshold.</div>
             </ion-label>
             <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
         </ion-item>
@@ -143,19 +161,6 @@
             <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.calibrationOffset"></ion-input>
         </ion-item>
 
-        <ion-item text-wrap>
-            <ion-label stacked>
-                <h3 style="padding-top: 5px;">Current trigger value</h3>
-                <div>The RSSI value that triggers a new lap detection.</div>
-            </ion-label>
-            <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
-        </ion-item>
-        <ion-item>
-            <button ion-button icon-start (click)="requestTriggerValue()">
-                    <ion-icon name="pulse"></ion-icon> 
-                Update trigger value
-            </button>
-        </ion-item>
     </ion-list>
 
     <ion-list>

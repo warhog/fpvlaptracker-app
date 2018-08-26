@@ -13,6 +13,7 @@ import * as RssiData from '../../models/rssidata'
 import * as MessageData from '../../models/messagedata'
 import { ScannerPage } from '../scanner/scanner';
 import { HomePage } from '../home/home';
+import { HelpPage } from '../help/home';
 
 @Component({
     selector: 'page-device',
@@ -58,10 +59,17 @@ export class DevicePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.fltunit.disconnect();
+    }
+
+    gotoHelp() {
+        this.navCtrl.push(HelpPage);
+        this.fltunit.disconnect();
     }
 
     gotoFastRssi() {
         this.navCtrl.push(FastrssiPage);
+        this.fltunit.disconnect();
     }
     
     requestData() {
@@ -106,6 +114,7 @@ export class DevicePage {
 
     gotoScanner() {
         this.navCtrl.push(ScannerPage);
+        this.fltunit.disconnect();
     }
 
     subscribe() {

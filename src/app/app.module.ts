@@ -23,6 +23,7 @@ import {NativeAudio} from '@ionic-native/native-audio';
 import {Insomnia} from '@ionic-native/insomnia';
 import {FltutilProvider} from '../providers/fltutil/fltutil';
 import {FltunitProvider} from '../providers/fltunit/fltunit';
+import { HelpPage } from '../pages/help/home';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import {FltunitProvider} from '../providers/fltunit/fltunit';
         RacePage,
         HomePage,
         TabsPage,
-        FastrssiPage
+        FastrssiPage,
+        HelpPage
     ],
     imports: [
         BrowserModule,
@@ -52,7 +54,8 @@ import {FltunitProvider} from '../providers/fltunit/fltunit';
         RacePage,
         HomePage,
         TabsPage,
-        FastrssiPage
+        FastrssiPage,
+        HelpPage
     ],
     providers: [
         StatusBar,

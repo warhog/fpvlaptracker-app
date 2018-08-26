@@ -90,6 +90,7 @@ export class RacePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.fltunit.disconnect();
     }
 
     showToast(errMsg: string) {
