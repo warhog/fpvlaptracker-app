@@ -100,35 +100,33 @@ export class FltunitProvider {
         this.isConnected().catch(() => {
             this.disconnect();
         });
-
         return new Promise((resolve, reject) => {
+            let id2 = null;
             me.storage.get("bluetooth.id").then((id: string) => {
-                me.storage.get("bluetooth.name").then((name: string) => {
-                    me.deviceName = name;
-                    me.fltutil.showLoader("Connecting to " + name + ", please wait...");
-                    me.bluetoothSerial.connect(id).subscribe((data) => {
-                        me.fltutil.hideLoader();
-                        me.state = FLT_UNIT_STATES.CONNECTED;
-                        me.bluetoothSerial.subscribe("\n").subscribe((data) => {
-                            me.onReceive(data);
-                        }, (errMsg) => {
-                            me.disconnect();
-                            reject(errMsg);
-                        });
-                        me.checkValidDevice();
-                        resolve();
+                id2 = id;
+                return me.storage.get("bluetooth.name");
+            }).then((name: string) => {
+                me.deviceName = name;
+                me.fltutil.showLoader("Connecting to " + name + ", please wait...");
+                me.bluetoothSerial.connect(id2).subscribe((data) => {
+                    me.fltutil.hideLoader();
+                    me.state = FLT_UNIT_STATES.CONNECTED;
+                    me.bluetoothSerial.subscribe("\n").subscribe((data) => {
+                        me.onReceive(data);
                     }, (errMsg) => {
-                        me.fltutil.hideLoader();
                         me.disconnect();
                         reject(errMsg);
                     });
-                }).catch(() => {
+                    me.checkValidDevice();
+                    resolve();
+                }, (errMsg) => {
+                    me.fltutil.hideLoader();
                     me.disconnect();
-                    reject("Cannot load bluetooth name");
+                    reject(errMsg);
                 });
             }).catch(() => {
                 me.disconnect();
-                reject("Cannot load bluetooth id");
+                reject("Cannot load bluetooth data");
             });
         });
     }
@@ -148,20 +146,17 @@ export class FltunitProvider {
         let me = this;
         return new Promise((resolve, reject) => {
             this.isConnected().then(() => {
-                this.bluetoothSerial.write(requestString + '\n').then(function () {
-                    if (timeout > 0 && me.timeout === null) {
-                        me.timeout = setTimeout(function() {
-                            me.timeoutHandler();
-                        }, timeout);
-                    }
-                    resolve();
-                }).catch(function (msg: string) {
-                    me.clearTimeout();
-                    reject(msg);
-                });
-            }).catch(() => {
+                return this.bluetoothSerial.write(requestString + '\n');
+            }).then(() => {
+                if (timeout > 0 && me.timeout === null) {
+                    me.timeout = setTimeout(function() {
+                        me.timeoutHandler();
+                    }, timeout);
+                }
+                resolve();
+            }).catch((msg: string) => {
                 me.clearTimeout();
-                reject("Not connected to unit");
+                reject("Request error" + (msg ? ": " + msg : ""));
             });
         });
     }
