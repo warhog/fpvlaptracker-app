@@ -106,6 +106,7 @@ export class DevicePage {
         let me = this;
         this.fltunit.connect().then(function() {
             me.deviceName = me.fltunit.getDeviceName();
+            me.subscribe();
         }).catch(function (errMsg: string) {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
@@ -118,40 +119,39 @@ export class DevicePage {
     }
 
     subscribe() {
-        if (!this.fltunit.isConnected()) {
-            this.fltutil.showToast('Not connected');
-            this.fltutil.hideLoader();
-            this.navCtrl.pop();
-            return;
-        }
         let me = this;
-        this.fltunit.getObservable().subscribe(data => {
+        this.fltunit.isConnected().catch(() => {
+            me.fltutil.showToast('Not connected');
             me.fltutil.hideLoader();
-            if (ConfigData.isConfigData(data)) {
-                me.zone.run(() => {
-                    me.configData = data;
-                });
-            } else if (RuntimeData.isRuntimeData(data)) {
-                me.zone.run(() => {
-                    me.configData.triggerValue = data.triggerValue;
-                });
-            } else if (StateData.isStateData(data)) {
-                me.zone.run(() => {
-                    me.configData.state = data.state;
-                });
-            } else if (RssiData.isRssiData(data)) {
-                me.zone.run(() => {
-                    me.rssi = data.rssi;
-                });
-            } else if (MessageData.isMessageData(data)) {
-                me.fltutil.showToast(data.message);
-            }
+            me.navCtrl.pop();
+        }).then(() => {
+            this.fltunit.getObservable().subscribe(data => {
+                me.fltutil.hideLoader();
+                if (ConfigData.isConfigData(data)) {
+                    me.zone.run(() => {
+                        me.configData = data;
+                    });
+                } else if (RuntimeData.isRuntimeData(data)) {
+                    me.zone.run(() => {
+                        me.configData.triggerValue = data.triggerValue;
+                    });
+                } else if (StateData.isStateData(data)) {
+                    me.zone.run(() => {
+                        me.configData.state = data.state;
+                    });
+                } else if (RssiData.isRssiData(data)) {
+                    me.zone.run(() => {
+                        me.rssi = data.rssi;
+                    });
+                } else if (MessageData.isMessageData(data)) {
+                    me.fltutil.showToast(data.message);
+                }
+            });
         });
     }
 
     ionViewDidEnter() {
         this.doConnect();
-        this.subscribe();
     }
 
     ionViewWillLeave() {

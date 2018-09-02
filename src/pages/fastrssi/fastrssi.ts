@@ -48,7 +48,9 @@ export class FastrssiPage {
 
     doConnect() {
         let me = this;
-        this.fltunit.connect().catch(function (errMsg: string) {
+        this.fltunit.connect().then(() => {
+            me.subscribe();
+        }).catch(function (errMsg: string) {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });
@@ -73,7 +75,6 @@ export class FastrssiPage {
 
     ionViewDidEnter() {
         this.doConnect();
-        this.subscribe();
     }
 
     ionViewWillLeave() {

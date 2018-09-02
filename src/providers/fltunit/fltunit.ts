@@ -91,15 +91,16 @@ export class FltunitProvider {
         });
     }
 
-    isConnected() {
+    isConnected() : Promise<any> {
         return this.bluetoothSerial.isConnected();
     }
 
     connect() : Promise<string> {
-        if (this.isConnected) {
-            this.disconnect();
-        }
         let me = this;
+        this.isConnected().catch(() => {
+            this.disconnect();
+        });
+
         return new Promise((resolve, reject) => {
             me.storage.get("bluetooth.id").then((id: string) => {
                 me.storage.get("bluetooth.name").then((name: string) => {
@@ -146,10 +147,7 @@ export class FltunitProvider {
     simpleRequest(requestString: string, timeout: number = 0) : Promise<string> {
         let me = this;
         return new Promise((resolve, reject) => {
-            if (!this.isConnected()) {
-                me.clearTimeout();
-                reject("Not connected to unit");
-            } else {
+            this.isConnected().then(() => {
                 this.bluetoothSerial.write(requestString + '\n').then(function () {
                     if (timeout > 0 && me.timeout === null) {
                         me.timeout = setTimeout(function() {
@@ -161,7 +159,10 @@ export class FltunitProvider {
                     me.clearTimeout();
                     reject(msg);
                 });
-            }
+            }).catch(() => {
+                me.clearTimeout();
+                reject("Not connected to unit");
+            });
         });
     }
 

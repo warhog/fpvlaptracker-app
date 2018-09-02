@@ -62,7 +62,9 @@ export class ScannerPage {
 
     doConnect() {
         let me = this;
-        this.fltunit.connect().catch(function (errMsg: string) {
+        this.fltunit.connect().then(() => {
+            me.subscribe();
+        }).catch(function (errMsg: string) {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
         });
@@ -105,7 +107,6 @@ export class ScannerPage {
 
     ionViewDidEnter() {
         this.doConnect();
-        this.subscribe();
     }
 
     ionViewWillLeave() {
