@@ -206,9 +206,7 @@ export class DevicePage {
             buttons: [{
                 text: "Cancel",
                 role: "cancel",
-                handler: data => {
-                    return false;
-                }
+                handler: data => {}
             }, {
                 text: "Create",
                 handler: (data) => {
