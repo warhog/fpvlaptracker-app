@@ -18,6 +18,30 @@
 
 <ion-content padding>
 
+    <h2>Profiles</h2>
+    <ion-list>
+        <ion-item>
+            <ion-label stacked>Set profile</ion-label>
+            <ion-select [(ngModel)]="profile" interface="popover">
+                <ion-option *ngFor="let i of profiles" (ionSelect)="changeProfile($event, i)">{{i == null ? "---" : i.name}}</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item text-wrap>
+            <button ion-button icon-start (click)="newProfile()">
+                <ion-icon name="add"></ion-icon> 
+                New
+            </button>
+            <button *ngIf="profile != ''" ion-button icon-start (click)="updateProfile()">
+                <ion-icon name="arrow-up"></ion-icon> 
+                Update
+            </button>
+            <button *ngIf="profile != ''" ion-button icon-start (click)="removeProfile()">
+                <ion-icon name="trash"></ion-icon> 
+                Remove
+            </button>
+        </ion-item>
+    </ion-list>
+
     <h2>Receiver</h2>
     <p>The frequency this tracker unit is listening on.</p>
     <ion-list>
