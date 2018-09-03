@@ -104,6 +104,9 @@ export class FltunitProvider {
             let id2 = null;
             me.storage.get("bluetooth.id").then((id: string) => {
                 id2 = id;
+                if (id === null) {
+                    reject("No tracker selected.");
+                }
                 return me.storage.get("bluetooth.name");
             }).then((name: string) => {
                 me.deviceName = name;
