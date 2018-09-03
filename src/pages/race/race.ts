@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {NavController, ViewController} from 'ionic-angular';
 import {ToastController} from 'ionic-angular';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {Storage} from '@ionic/storage';
@@ -32,6 +32,24 @@ export class RacePage {
     private fastestLapTime: number = 0;
     private averageLapTime: number = 0;
     private totalTime: number = 0;
+
+
+    constructor(
+        public zone: NgZone,
+        private storage: Storage, 
+        public toastCtrl: ToastController, 
+        public navCtrl: NavController, 
+        private loadingCtrl: LoadingController, 
+        private bluetoothSerial: BluetoothSerial, 
+        private smartAudio: SmartAudioProvider, 
+        private insomnia: Insomnia,
+        private fltutil: FltutilProvider,
+        private fltunit: FltunitProvider,
+        private viewCtrl: ViewController
+        ) {
+        this.restartRace();
+        this.setRaceState(RACESTATE.STOP);
+    }
 
     restartRace() {
         this.setRaceState(RACESTATE.WAITING);
@@ -70,22 +88,6 @@ export class RacePage {
             default:
                 return "Unknown";
         }
-    }
-
-    constructor(
-        public zone: NgZone,
-        private storage: Storage, 
-        public toastCtrl: ToastController, 
-        public navCtrl: NavController, 
-        private loadingCtrl: LoadingController, 
-        private bluetoothSerial: BluetoothSerial, 
-        private smartAudio: SmartAudioProvider, 
-        private insomnia: Insomnia,
-        private fltutil: FltutilProvider,
-        private fltunit: FltunitProvider
-        ) {
-        this.restartRace();
-        this.setRaceState(RACESTATE.STOP);
     }
 
     gotoSettings() {
@@ -242,6 +244,9 @@ export class RacePage {
         });
     }
 
+    ionViewWillEnter() {
+        this.viewCtrl.showBackButton(false);
+    }
 }
 
 enum RACESTATE {

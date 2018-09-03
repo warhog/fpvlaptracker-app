@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, AlertController} from 'ionic-angular';
+import {NavController, AlertController, ViewController} from 'ionic-angular';
 import {BluetoothPage} from '../bluetooth/bluetooth';
 import {Storage} from '@ionic/storage';
 import {FltutilProvider} from '../../providers/fltutil/fltutil';
@@ -48,7 +48,8 @@ export class DevicePage {
         private fltutil: FltutilProvider, 
         private fltunit: FltunitProvider,
         private zone: NgZone,
-        private alertCtrl: AlertController
+        private alertCtrl: AlertController,
+        private viewCtrl: ViewController
     ) {
         this.loadProfiles();
     }
@@ -332,6 +333,10 @@ export class DevicePage {
 
     ionViewWillLeave() {
         this.fltunit.disconnect();
+    }
+
+    ionViewWillEnter() {
+        this.viewCtrl.showBackButton(false);
     }
 
 }
