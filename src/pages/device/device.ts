@@ -35,7 +35,8 @@ export class DevicePage {
         state: "",
         triggerValue: 0,
         voltage: 0,
-        uptime: 0
+        uptime: 0,
+        defaultVref: 0
     };
     private rssi: number = 0;
     private deviceName: string = "";
@@ -175,7 +176,8 @@ export class DevicePage {
             "minimumLapTime": 4000,
             "triggerThreshold": 40,
             "triggerThresholdCalibration": 120,
-            "calibrationOffset": 10
+            "calibrationOffset": 10,
+            "defaultVref": 1100
         };
     }
 
@@ -220,7 +222,8 @@ export class DevicePage {
                         frequency: me.configData.frequency,
                         minimumLapTime: me.configData.minimumLapTime,
                         triggerThreshold: me.configData.triggerThreshold,
-                        triggerThresholdCalibration: me.configData.triggerThresholdCalibration
+                        triggerThresholdCalibration: me.configData.triggerThresholdCalibration,
+                        defaultVref: me.configData.defaultVref
                     };
                     me.profiles = me.profiles.concat(tempProfile);
                     me.profile = data.profile;

@@ -4,7 +4,8 @@ export interface ProfileData {
     minimumLapTime: number,
     triggerThreshold: number,
     triggerThresholdCalibration: number,
-    calibrationOffset: number
+    calibrationOffset: number,
+    defaultVref: number
 }
 
 
@@ -14,5 +15,7 @@ export function isProfileData(arg: any) : arg is ProfileData {
         arg.minimumLapTime !== undefined && 
         arg.triggerThreshold !== undefined && 
         arg.triggerThresholdCalibration !== undefined && 
-        arg.calibrationOffset !== undefined;
+        arg.calibrationOffset !== undefined &&
+        arg.defaultVref !== undefined;
 }
+ 

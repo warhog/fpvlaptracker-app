@@ -226,6 +226,14 @@
     <ion-list>
         <div>Tracker battery voltage: {{configData.voltage | number:'2.1-1'}} Volt</div>
         <div>Uptime: {{configData.uptime}} seconds</div>
+
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Voltage calibration</h3>
+                <div>Calibration value for the default reference voltage in mV</div>
+            </ion-label>
+            <ion-input type="number" min="1000" max="1200" step="1" value="" [(ngModel)]="configData.defaultVref"></ion-input>
+        </ion-item>
     </ion-list>
 
 </ion-content>

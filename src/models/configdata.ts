@@ -10,7 +10,8 @@ export interface ConfigData {
     state: string,
     triggerValue: number,
     voltage: number,
-    uptime: number
+    uptime: number,
+    defaultVref: number
 }
 
 
