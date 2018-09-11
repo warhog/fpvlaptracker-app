@@ -34,27 +34,27 @@
 	<h2>Lap detection settings</h2>
 	<ion-list>
 		<ion-item text-wrap>
-			<h3>Minimum lap time</h3>
+			<h3 style="padding-top: 5px;">Minimum lap time</h3>
 			<p>The minimum allowed lap time. Lap times that are below the defined value are not taken into account and therefore not counted.</p>
 		</ion-item>
 
 		<ion-item text-wrap>
-			<h3>Current trigger value</h3>
+			<h3 style="padding-top: 5px;">Current trigger value</h3>
 			<p>The RSSI value that triggers a new lap detection. If the measured RSSI value is equal or above this value a new lap detection is started.</p>
 		</ion-item>
 
 		<ion-item text-wrap>
-			<h3>RSSI trigger threshold</h3>
+			<h3 style="padding-top: 5px;">RSSI trigger threshold</h3>
 			<p>The trigger threshold defines the RSSI window in which the lap detection is active. The lap detection ends if RSSI is below trigger value minus trigger threshold.</p>
 		</ion-item>
 
 		<ion-item text-wrap>
-			<h3>RSSI trigger <b>calibration</b> threshold</h3>
+			<h3 style="padding-top: 5px;">RSSI trigger <b>calibration</b> threshold</h3>
 			<p>The RSSI trigger threshold during calibration state. The calibration ends if RSSI is below trigger value (see below) minus calibration trigger threshold.</p>
 		</ion-item>
 
 		<ion-item text-wrap>
-			<h3>RSSI calibration offset</h3>
+			<h3 style="padding-top: 5px;">RSSI calibration offset</h3>
 			<p>The RSSI offset that is substracted from found peek during calibration. Improves lap detection but can add jitter to lap times. This should compensate for a slightly different flying path (e.g. flying a bit higher than during calibration).</p>
 		</ion-item>
 
