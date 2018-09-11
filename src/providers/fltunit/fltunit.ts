@@ -278,10 +278,13 @@ export class FltunitProvider {
             this.state = FLT_UNIT_STATES.VALIDATED;
             if (data.startsWith("SETCONFIG: ")) {
                 let result: string = data.substring(11);
-                if (result.trim() == "OK") {
-                    let messageData: MessageData = { type: "message", message: "Successfully saved" };
-                    this.observer.next(messageData);
+                if (result.trim() == "OK" || result.trim() == "OK reboot") {
                     this.loadConfigData();
+                    let messageData: MessageData = { type: "message", message: "Successfully saved" };
+                    if (result.trim() == "OK reboot") {
+                        messageData.reboot = true;
+                    }
+                    this.observer.next(messageData);
                 } else {
                     let messageData: MessageData = { type: "message", message: "Cannot save to device!" };
                     this.observer.next(messageData);

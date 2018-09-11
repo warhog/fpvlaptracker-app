@@ -152,6 +152,9 @@ export class DevicePage {
                     });
                 } else if (MessageData.isMessageData(data)) {
                     me.fltutil.showToast(data.message);
+                    if (data.reboot !== undefined && data.reboot == true) {
+                        me.reboot();
+                    }
                 }
             });
         });
@@ -176,8 +179,7 @@ export class DevicePage {
             "minimumLapTime": 4000,
             "triggerThreshold": 40,
             "triggerThresholdCalibration": 120,
-            "calibrationOffset": 10,
-            "defaultVref": 1100
+            "calibrationOffset": 10
         };
     }
 
@@ -222,8 +224,7 @@ export class DevicePage {
                         frequency: me.configData.frequency,
                         minimumLapTime: me.configData.minimumLapTime,
                         triggerThreshold: me.configData.triggerThreshold,
-                        triggerThresholdCalibration: me.configData.triggerThresholdCalibration,
-                        defaultVref: me.configData.defaultVref
+                        triggerThresholdCalibration: me.configData.triggerThresholdCalibration
                     };
                     me.profiles = me.profiles.concat(tempProfile);
                     me.profile = data.profile;
