@@ -42,6 +42,7 @@ export class DevicePage {
     private deviceName: string = "";
     private profile: string = "";
     private profiles: ProfileData[] = [];
+    private cells = 1;
 
     constructor(
         public storage: Storage, 
@@ -135,6 +136,17 @@ export class DevicePage {
             this.fltunit.getObservable().subscribe(data => {
                 me.fltutil.hideLoader();
                 if (ConfigData.isConfigData(data)) {
+                    if (data.voltage > 7 && data.voltage <= 10) {
+                        me.cells = 2;
+                    } else if (data.voltage > 10 && data.voltage <= 13) {
+                        me.cells = 3;
+                    } else if (data.voltage > 13 && data.voltage <= 17) {
+                        me.cells = 4;
+                    } else if (data.voltage > 17 && data.voltage <= 21.5) {
+                        me.cells = 5;
+                    } else if (data.voltage > 21.5 && data.voltage <= 26) {
+                        me.cells = 6;
+                    }
                     me.zone.run(() => {
                         me.configData = data;
                     });
