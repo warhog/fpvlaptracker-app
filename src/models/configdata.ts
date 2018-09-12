@@ -11,7 +11,8 @@ export interface ConfigData {
     triggerValue: number,
     voltage: number,
     uptime: number,
-    defaultVref: number
+    defaultVref: number,
+    wifiState: boolean
 }
 
 

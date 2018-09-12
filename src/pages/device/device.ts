@@ -36,7 +36,8 @@ export class DevicePage {
         triggerValue: 0,
         voltage: 0,
         uptime: 0,
-        defaultVref: 0
+        defaultVref: 0,
+        wifiState: false
     };
     private rssi: number = 0;
     private deviceName: string = "";

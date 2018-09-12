@@ -226,6 +226,7 @@
     <ion-list>
         <div>Tracker battery voltage: {{configData.voltage | number:'2.1-1'}} Volt (Cells: {{configData.voltage / cells | number:'1.1-1'}} Volt)</div>
         <div>Uptime: {{configData.uptime}} seconds</div>
+        <div>WiFi connected: {{configData.wifiState}}</div>
 
         <ion-item text-wrap>
             <ion-label stacked>
