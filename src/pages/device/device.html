@@ -47,7 +47,7 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>Frequency</ion-label>
-            <ion-select [(ngModel)]="configData.frequency" interface="popover">
+            <ion-select [(ngModel)]="deviceData.frequency" interface="popover">
               <ion-option value="5865">Band A 1</ion-option>
               <ion-option value="5845">Band A 2</ion-option>
               <ion-option value="5825">Band A 3</ion-option>
@@ -113,23 +113,11 @@
         </ion-item>
         <ion-item>
             <ion-label stacked>RSSI</ion-label>
-            <ion-input type="number" disabled value="" [(ngModel)]="rssi"></ion-input>
-        </ion-item>
-        <ion-item>
-            <button ion-button icon-start (click)="requestRssi()">
-                <ion-icon name="wifi"></ion-icon> 
-                Update RSSI
-            </button>
+            <ion-input type="number" disabled value="" [(ngModel)]="deviceData.rssi"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label stacked>State</ion-label>
-            <ion-input type="text" disabled value="" [(ngModel)]="configData.state"></ion-input>
-        </ion-item>
-        <ion-item>
-            <button ion-button icon-start (click)="requestState()">
-                <ion-icon name="pulse"></ion-icon> 
-                Update state
-            </button>
+            <ion-input type="text" disabled value="" [(ngModel)]="deviceData.state"></ion-input>
         </ion-item>
     </ion-list>
 
@@ -144,29 +132,23 @@
                 <h3 style="padding-top: 5px;">Minimum lap time</h3>
                 <div>The duration of the lap detection lock in seconds.</div>
             </ion-label>
-            <ion-input type="number" min="1" max="300" step="1" value="" [(ngModel)]="configData.minimumLapTime"></ion-input>
+            <ion-input type="number" min="1" max="300" step="1" value="" [(ngModel)]="deviceData.minimumLapTime"></ion-input>
         </ion-item>
 
         <ion-item text-wrap>
-                <ion-label stacked>
-                    <h3 style="padding-top: 5px;">Current trigger value</h3>
-                    <div>The RSSI value that triggers a new lap detection.</div>
-                </ion-label>
-                <ion-input type="text" disabled value="" [(ngModel)]="configData.triggerValue"></ion-input>
-            </ion-item>
-            <ion-item>
-                <button ion-button icon-start (click)="requestTriggerValue()">
-                        <ion-icon name="pulse"></ion-icon> 
-                    Update trigger value
-                </button>
-            </ion-item>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Current trigger value</h3>
+                <div>The RSSI value that triggers a new lap detection.</div>
+            </ion-label>
+            <ion-input type="text" disabled value="" [(ngModel)]="deviceData.triggerValue"></ion-input>
+        </ion-item>
 
         <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">RSSI trigger threshold</h3>
                 <div>The trigger threshold defines the RSSI window in which the lap detection is active. The lap detection ends if RSSI is below trigger value minus trigger threshold.</div>
             </ion-label>
-            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThreshold"></ion-input>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="deviceData.triggerThreshold"></ion-input>
         </ion-item>
 
         <ion-item text-wrap>
@@ -174,7 +156,7 @@
                 <h3 style="padding-top: 5px;">RSSI trigger <b>calibration</b> threshold</h3>
                 <div>The RSSI trigger threshold during calibration state. The calibration ends if RSSI is below trigger value (see below) minus calibration trigger threshold.</div>
             </ion-label>
-            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.triggerThresholdCalibration"></ion-input>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="deviceData.triggerThresholdCalibration"></ion-input>
         </ion-item>
 
         <ion-item text-wrap>
@@ -182,7 +164,23 @@
                 <h3 style="padding-top: 5px;">RSSI calibration offset</h3>
                 <div>The RSSI offset that is substracted from found peek during calibration. Improves lap detection but can add jitter to lap times.</div>
             </ion-label>
-            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="configData.calibrationOffset"></ion-input>
+            <ion-input type="number" min="0" max="4096" step="1" value="" [(ngModel)]="deviceData.calibrationOffset"></ion-input>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Filter ratio</h3>
+                <div>The filter ratio for smoothing the RSSI signal. 0 = only old values, 1 = only new values.</div>
+            </ion-label>
+            <ion-input type="number" min="0" max="1" step="0.001" value="" [(ngModel)]="deviceData.filterRatio"></ion-input>
+        </ion-item>
+
+        <ion-item text-wrap>
+            <ion-label stacked>
+                <h3 style="padding-top: 5px;">Filter ratio <b>calibration</b></h3>
+                <div>The filter ratio for smoothing the RSSI signal during calibration. 0 = only old values, 1 = only new values.</div>
+            </ion-label>
+            <ion-input type="number" min="0" max="1" step="0.001" value="" [(ngModel)]="deviceData.filterRatioCalibration"></ion-input>
         </ion-item>
 
     </ion-list>
@@ -203,12 +201,12 @@
     <ion-list>
         <ion-item>
             <ion-label stacked>SSID</ion-label>
-            <ion-input type="text" value="" [(ngModel)]="configData.ssid"></ion-input>
+            <ion-input type="text" value="" [(ngModel)]="deviceData.ssid"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label stacked>Password</ion-label>
-            <ion-input type="password" [(ngModel)]="configData.password"></ion-input>
+            <ion-input type="password" [(ngModel)]="deviceData.password"></ion-input>
         </ion-item>
 
     </ion-list>
@@ -224,16 +222,17 @@
         </ion-item>
     </ion-list>
     <ion-list>
-        <div>Tracker battery voltage: {{configData.voltage | number:'2.1-1'}} Volt (Cells: {{configData.voltage / cells | number:'1.1-1'}} Volt)</div>
-        <div>Uptime: {{configData.uptime}} seconds</div>
-        <div>WiFi connected: {{configData.wifiState}}</div>
+        <div>Tracker battery voltage: {{deviceData.voltage | number:'2.1-1'}} Volt (Cells: {{deviceData.voltage / cells | number:'1.1-1'}} Volt)</div>
+        <div>Uptime: {{deviceData.uptime}} seconds</div>
+        <div>Looptime: {{deviceData.loopTime}} µs</div>
+        <div>WiFi connected: {{deviceData.wifiState}}</div>
 
         <ion-item text-wrap>
             <ion-label stacked>
                 <h3 style="padding-top: 5px;">Voltage calibration</h3>
                 <div>Calibration value for the default reference voltage in mV</div>
             </ion-label>
-            <ion-input type="number" min="1000" max="1200" step="1" value="" [(ngModel)]="configData.defaultVref"></ion-input>
+            <ion-input type="number" min="1000" max="1200" step="1" value="" [(ngModel)]="deviceData.defaultVref"></ion-input>
         </ion-item>
     </ion-list>
 

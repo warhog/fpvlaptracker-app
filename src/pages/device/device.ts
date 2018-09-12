@@ -6,10 +6,7 @@ import {FltutilProvider} from '../../providers/fltutil/fltutil';
 import {FltunitProvider} from '../../providers/fltunit/fltunit';
 import {NgZone} from '@angular/core';
 import {FastrssiPage} from '../fastrssi/fastrssi';
-import * as ConfigData from '../../models/configdata'
-import * as RuntimeData from '../../models/runtimedata'
-import * as StateData from '../../models/statedata'
-import * as RssiData from '../../models/rssidata'
+import * as DeviceData from '../../models/devicedata'
 import * as MessageData from '../../models/messagedata'
 import { ScannerPage } from '../scanner/scanner';
 import { HomePage } from '../home/home';
@@ -23,8 +20,8 @@ import { ProfileData } from '../../models/profiledata';
 
 export class DevicePage {
 
-    private configData: ConfigData.ConfigData = {
-        type: "config",
+    private deviceData: DeviceData.DeviceData = {
+        type: "device",
         ssid: "",
         password: "",
         frequency: 0,
@@ -37,9 +34,12 @@ export class DevicePage {
         voltage: 0,
         uptime: 0,
         defaultVref: 0,
-        wifiState: false
+        wifiState: false,
+        rssi: 0,
+        loopTime: 0,
+        filterRatio: 0.0,
+        filterRatioCalibration: 0.0
     };
-    private rssi: number = 0;
     private deviceName: string = "";
     private profile: string = "";
     private profiles: ProfileData[] = [];
@@ -63,7 +63,7 @@ export class DevicePage {
     }
 
     saveData() {
-        this.fltunit.saveData(this.configData);
+        this.fltunit.saveData(this.deviceData);
     }
 
     gotoSettings() {
@@ -82,32 +82,11 @@ export class DevicePage {
     }
     
     requestData() {
-        this.fltutil.showLoader("Loading configuration...");
+        this.fltutil.showLoader("Loading device data...");
         let me = this;
-        this.fltunit.loadConfigData().catch(function (msg: string) {
+        this.fltunit.loadDeviceData().catch(function (msg: string) {
             me.fltutil.hideLoader();
-            me.fltutil.showToast("Cannot get configuration: " + msg);
-        });
-    }
-
-    requestRssi() {
-        let me = this;
-        this.fltunit.loadRssi().catch(function (msg: string) {
-            me.fltutil.showToast("Cannot get rssi: " + msg);
-        });
-    }
-
-    requestState() {
-        let me = this;
-        this.fltunit.loadState().catch(function (msg: string) {
-            me.fltutil.showToast("Cannot get state: " + msg);
-        });
-    }
-
-    requestTriggerValue() {
-        let me = this;
-        this.fltunit.loadTriggerValue().catch(function (msg: string) {
-            me.fltutil.showToast("Cannot get trigger value: " + msg);
+            me.fltutil.showToast("Cannot get device data: " + msg);
         });
     }
 
@@ -136,7 +115,7 @@ export class DevicePage {
         }).then(() => {
             this.fltunit.getObservable().subscribe(data => {
                 me.fltutil.hideLoader();
-                if (ConfigData.isConfigData(data)) {
+                if (DeviceData.isDeviceData(data)) {
                     if (data.voltage > 7 && data.voltage <= 10) {
                         me.cells = 2;
                     } else if (data.voltage > 10 && data.voltage <= 13) {
@@ -149,19 +128,7 @@ export class DevicePage {
                         me.cells = 6;
                     }
                     me.zone.run(() => {
-                        me.configData = data;
-                    });
-                } else if (RuntimeData.isRuntimeData(data)) {
-                    me.zone.run(() => {
-                        me.configData.triggerValue = data.triggerValue;
-                    });
-                } else if (StateData.isStateData(data)) {
-                    me.zone.run(() => {
-                        me.configData.state = data.state;
-                    });
-                } else if (RssiData.isRssiData(data)) {
-                    me.zone.run(() => {
-                        me.rssi = data.rssi;
+                        me.deviceData = data;
                     });
                 } else if (MessageData.isMessageData(data)) {
                     me.fltutil.showToast(data.message);
@@ -192,7 +159,9 @@ export class DevicePage {
             "minimumLapTime": 4000,
             "triggerThreshold": 40,
             "triggerThresholdCalibration": 120,
-            "calibrationOffset": 10
+            "calibrationOffset": 10,
+            "filterRatio": 0.05,
+            "filterRatioCalibration": 0.001
         };
     }
 
@@ -233,11 +202,13 @@ export class DevicePage {
                     }
                     let tempProfile: ProfileData = {
                         name: data.profile,
-                        calibrationOffset: me.configData.calibrationOffset,
-                        frequency: me.configData.frequency,
-                        minimumLapTime: me.configData.minimumLapTime,
-                        triggerThreshold: me.configData.triggerThreshold,
-                        triggerThresholdCalibration: me.configData.triggerThresholdCalibration
+                        calibrationOffset: me.deviceData.calibrationOffset,
+                        frequency: me.deviceData.frequency,
+                        minimumLapTime: me.deviceData.minimumLapTime,
+                        triggerThreshold: me.deviceData.triggerThreshold,
+                        triggerThresholdCalibration: me.deviceData.triggerThresholdCalibration,
+                        filterRatio: me.deviceData.filterRatio,
+                        filterRatioCalibration: me.deviceData.filterRatioCalibration
                     };
                     me.profiles = me.profiles.concat(tempProfile);
                     me.profile = data.profile;
@@ -256,11 +227,13 @@ export class DevicePage {
         }
         for (let i: number = 0; i < this.profiles.length; i++) {
             if (this.profiles[i].name == this.profile) {
-                this.profiles[i].frequency = this.configData.frequency;
-                this.profiles[i].minimumLapTime = this.configData.minimumLapTime;
-                this.profiles[i].triggerThreshold = this.configData.triggerThreshold;
-                this.profiles[i].triggerThresholdCalibration = this.configData.triggerThresholdCalibration;
-                this.profiles[i].calibrationOffset = this.configData.calibrationOffset;
+                this.profiles[i].frequency = this.deviceData.frequency;
+                this.profiles[i].minimumLapTime = this.deviceData.minimumLapTime;
+                this.profiles[i].triggerThreshold = this.deviceData.triggerThreshold;
+                this.profiles[i].triggerThresholdCalibration = this.deviceData.triggerThresholdCalibration;
+                this.profiles[i].calibrationOffset = this.deviceData.calibrationOffset;
+                this.profiles[i].filterRatio = this.deviceData.filterRatio;
+                this.profiles[i].filterRatioCalibration = this.deviceData.filterRatioCalibration;
             }
         }
         this.saveProfiles();
@@ -318,7 +291,7 @@ export class DevicePage {
                     for (let i: number = 0; i < me.profiles.length; i++) {
                         if (me.profiles[i].name == newProfile) {
                             if (me.profiles[i].frequency !== -1) {
-                                if (me.configData.frequency != me.profiles[i].frequency) {
+                                if (me.deviceData.frequency != me.profiles[i].frequency) {
                                     let alert = this.alertCtrl.create({
                                         title: "Changed frequency",
                                         subTitle: "You changed the frequency this tracker is listening to. Please power off your video transmitter and reboot unit after changing the profile!",
@@ -326,12 +299,14 @@ export class DevicePage {
                                     });
                                     alert.present();
                                 }
-                                me.configData.frequency = me.profiles[i].frequency;
+                                me.deviceData.frequency = me.profiles[i].frequency;
                             }
-                            me.configData.minimumLapTime = me.profiles[i].minimumLapTime;
-                            me.configData.triggerThreshold = me.profiles[i].triggerThreshold;
-                            me.configData.triggerThresholdCalibration = me.profiles[i].triggerThresholdCalibration;
-                            me.configData.calibrationOffset = me.profiles[i].calibrationOffset;
+                            me.deviceData.minimumLapTime = me.profiles[i].minimumLapTime;
+                            me.deviceData.triggerThreshold = me.profiles[i].triggerThreshold;
+                            me.deviceData.triggerThresholdCalibration = me.profiles[i].triggerThresholdCalibration;
+                            me.deviceData.calibrationOffset = me.profiles[i].calibrationOffset;
+                            me.deviceData.filterRatio = me.profiles[i].filterRatio;
+                            me.deviceData.filterRatioCalibration = me.profiles[i].filterRatioCalibration;
                             me.saveData();
                             break;
                         }

@@ -4,8 +4,7 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {FltutilProvider} from '../fltutil/fltutil'
 import {Observable} from 'rxjs/Observable';
 import {Storage} from '@ionic/storage';
-import {RuntimeData} from '../../models/runtimedata';
-import {ConfigData} from '../../models/configdata';
+import {DeviceData} from '../../models/devicedata';
 import {StateData, isStateScanData, isStateRssiData, isStateCalibrationData} from '../../models/statedata'
 import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
@@ -79,12 +78,12 @@ export class FltunitProvider {
         this.state = state;
     }
 
-    saveData(configData: ConfigData) {
+    saveData(deviceData: DeviceData) {
         this.setState(FLT_UNIT_STATES.CHECK_SAVE_SUCCESS);
         let me = this;
-        configData.minimumLapTime = configData.minimumLapTime * 1000;
-        this.bluetoothSerial.write("PUT config " + JSON.stringify(configData) + "\n").then(function() {
-            configData.minimumLapTime = configData.minimumLapTime / 1000;
+        deviceData.minimumLapTime = deviceData.minimumLapTime * 1000;
+        this.bluetoothSerial.write("PUT config " + JSON.stringify(deviceData) + "\n").then(function() {
+            deviceData.minimumLapTime = deviceData.minimumLapTime / 1000;
         }).catch(function (msg) {
             me.observer.next({type: "message", message: "Cannot save: " + msg});
             me.state = FLT_UNIT_STATES.VALIDATED;
@@ -165,35 +164,23 @@ export class FltunitProvider {
     }
 
     startScanChannels() : Promise<string> {
-        return this.simpleRequest("START scan");
+        return this.simpleRequest("START scan", 1000);
     }
 
     stopScanChannels() : Promise<string> {
-        return this.simpleRequest("STOP scan");
+        return this.simpleRequest("STOP scan", 1000);
     }
 
     startFastRssi() : Promise<string> {
-        return this.simpleRequest("START rssi");
+        return this.simpleRequest("START rssi", 1000);
     }
 
     stopFastRssi() : Promise<string> {
-        return this.simpleRequest("STOP rssi");
+        return this.simpleRequest("STOP rssi", 1000);
     }
 
-    loadConfigData() : Promise<string> {
-        return this.simpleRequest("GET config", 5000);
-    }
-
-    loadRssi() : Promise<string> {
-        return this.simpleRequest("GET rssi");
-    }
-
-    loadState() : Promise<string> {
-        return this.simpleRequest("GET state");
-    }
-
-    loadTriggerValue() : Promise<string> {
-        return this.simpleRequest("GET runtimedata");
+    loadDeviceData() : Promise<string> {
+        return this.simpleRequest("GET device", 5000);
     }
 
     checkValidDevice() {
@@ -232,14 +219,14 @@ export class FltunitProvider {
                 this.state = FLT_UNIT_STATES.VALIDATED;
                 let versionData: VersionData = JSON.parse(data);
                 this.version = versionData.version;
-                this.loadConfigData();
+                this.loadDeviceData();
             }
         } else if (this.isValidated()) {
             let dataType: string = getDataType(data);
-            if (dataType == "config") {
-                let config: ConfigData = JSON.parse(data);
-                config.minimumLapTime = config.minimumLapTime / 1000;
-                this.observer.next(config);
+            if (dataType == "device") {
+                let deviceData: DeviceData = JSON.parse(data);
+                deviceData.minimumLapTime = deviceData.minimumLapTime / 1000;
+                this.observer.next(deviceData);
             } else if (dataType == "rssi") {
                 let rssiData: RssiData = JSON.parse(data);
                 this.observer.next(rssiData);
@@ -255,13 +242,11 @@ export class FltunitProvider {
                 if (isStateCalibrationData(stateData)) {
                     this.fltutil.showToast("Calibration done", 3000);
                     this.smartAudioProvider.play("calibrationdone");
+                    this.loadDeviceData();
                 }
                 if (!isStateScanData(stateData) && !isStateRssiData(stateData) && !isStateCalibrationData(stateData)) {
                     this.observer.next(stateData);
                 }
-            } else if (dataType == "runtime") {
-                let runtimeData: RuntimeData = JSON.parse(data);
-                this.observer.next(runtimeData);
             } else if (dataType == "lap") {
                 let lapData: LapData = JSON.parse(data);
                 this.observer.next(lapData);
@@ -279,7 +264,7 @@ export class FltunitProvider {
             if (data.startsWith("SETCONFIG: ")) {
                 let result: string = data.substring(11);
                 if (result.trim() == "OK" || result.trim() == "OK reboot") {
-                    this.loadConfigData();
+                    this.loadDeviceData();
                     let messageData: MessageData = { type: "message", message: "Successfully saved" };
                     if (result.trim() == "OK reboot") {
                         messageData.reboot = true;

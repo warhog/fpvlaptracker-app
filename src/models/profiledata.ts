@@ -4,7 +4,9 @@ export interface ProfileData {
     minimumLapTime: number,
     triggerThreshold: number,
     triggerThresholdCalibration: number,
-    calibrationOffset: number
+    calibrationOffset: number,
+    filterRatio: number,
+    filterRatioCalibration: number
 }
 
 

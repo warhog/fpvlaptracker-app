@@ -1,4 +1,4 @@
-export interface ConfigData {
+export interface DeviceData {
     type: string,
     ssid: string,
     password: string,
@@ -12,10 +12,14 @@ export interface ConfigData {
     voltage: number,
     uptime: number,
     defaultVref: number,
-    wifiState: boolean
+    wifiState: boolean,
+    rssi: number,
+    loopTime: number,
+    filterRatio: number,
+    filterRatioCalibration: number
 }
 
 
-export function isConfigData(arg: any) : arg is ConfigData {
-    return arg.type !== undefined && arg.type == "config";
+export function isDeviceData(arg: any) : arg is DeviceData {
+    return arg.type !== undefined && arg.type == "device";
 }

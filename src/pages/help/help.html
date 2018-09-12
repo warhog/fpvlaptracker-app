@@ -58,6 +58,16 @@
 			<p>The RSSI offset that is substracted from found peek during calibration. Improves lap detection but can add jitter to lap times. This should compensate for a slightly different flying path (e.g. flying a bit higher than during calibration).</p>
 		</ion-item>
 
+		<ion-item text-wrap>
+			<h3 style="padding-top: 5px;">Filter ratio</h3>
+			<p>The <u>filter ratio</u> is the smoothing factor for the RSSI signal. The ratio is allowed to be in the range from 0 to 1. Values more near zero mean more smoothing while values near 1 mean less smoothing but more jitter. When set to zero no new values are considered. A value of one disables smoothing.</p>
+		</ion-item>
+
+		<ion-item text-wrap>
+			<h3 style="padding-top: 5px;">Filter ratio <b>calibration</b></h3>
+			<p>The <u>filter ratio calibration</u> is the smoothing factor for the RSSI signal during calibration. The ratio is allowed to be in the range from 0 to 1. Values more near zero mean more smoothing while values near 1 mean less smoothing but more jitter. When set to zero no new values are considered. A value of one disables smoothing. This can come in handy if your VTX sends multiple bursts during startup, you can set a very low value (e.g. 0.001) here to add extreme smoothing (please keep in mind that the calibration run should be done very slow then!)</p>
+		</ion-item>
+
 	</ion-list>
 
 </ion-content>
