@@ -23,7 +23,7 @@ import {NativeAudio} from '@ionic-native/native-audio';
 import {Insomnia} from '@ionic-native/insomnia';
 import {FltutilProvider} from '../providers/fltutil/fltutil';
 import {FltunitProvider} from '../providers/fltunit/fltunit';
-import { HelpPage } from '../pages/help/home';
+import { HelpPage } from '../pages/help/help';
 
 @NgModule({
     declarations: [

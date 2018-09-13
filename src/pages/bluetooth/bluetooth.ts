@@ -22,6 +22,7 @@ export class BluetoothPage {
             id: item.id,
             name: item.name
         });
+        this.navCtrl.parent.select(1);
     }
 
     reload() {

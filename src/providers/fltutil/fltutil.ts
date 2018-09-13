@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
-import {LoadingController} from 'ionic-angular';
+import {LoadingController, NavController} from 'ionic-angular';
 import {ToastController} from 'ionic-angular';
+import { BluetoothPage } from '../../pages/bluetooth/bluetooth';
 
 /*
   Generated class for the TestProvider provider.

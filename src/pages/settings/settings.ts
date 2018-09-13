@@ -34,6 +34,7 @@ export class SettingsPage {
 
     gotoBluetoothSelection() {
         this.navCtrl.push(BluetoothPage);
+        this.navCtrl.parent.select(3);
     }
 
     saveValues() {

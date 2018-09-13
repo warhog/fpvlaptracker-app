@@ -92,6 +92,7 @@ export class RacePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.navCtrl.parent.select(3);
         this.fltunit.disconnect();
     }
 

@@ -10,7 +10,7 @@ import * as DeviceData from '../../models/devicedata'
 import * as MessageData from '../../models/messagedata'
 import { ScannerPage } from '../scanner/scanner';
 import { HomePage } from '../home/home';
-import { HelpPage } from '../help/home';
+import { HelpPage } from '../help/help';
 import { ProfileData } from '../../models/profiledata';
 
 @Component({
@@ -60,6 +60,7 @@ export class DevicePage {
     reboot() {
         this.fltunit.reboot();
         this.navCtrl.push(HomePage);
+        this.navCtrl.parent.select(0);
     }
 
     saveData() {
@@ -68,16 +69,19 @@ export class DevicePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
+        this.navCtrl.parent.select(3);
         this.fltunit.disconnect();
     }
 
     gotoHelp() {
         this.navCtrl.push(HelpPage);
+        this.navCtrl.parent.select(1);
         this.fltunit.disconnect();
     }
 
     gotoFastRssi() {
         this.navCtrl.push(FastrssiPage);
+        this.navCtrl.parent.select(1);
         this.fltunit.disconnect();
     }
     
@@ -103,6 +107,7 @@ export class DevicePage {
 
     gotoScanner() {
         this.navCtrl.push(ScannerPage);
+        this.navCtrl.parent.select(1);
         this.fltunit.disconnect();
     }
 
