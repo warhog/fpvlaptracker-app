@@ -17,3 +17,9 @@ there's a build script `build_release.sh` that builds the android release.
 the application is not storing any information except the tracker unit id.
 
 non of your private data is sent out or stored.
+
+
+# sound files used
+_lap:_ [freesound](https://www.freesound.org/people/StaneStane/sounds/73560/)
+
+texts: [fromtexttospeech.com](http://www.fromtexttospeech.com/)
