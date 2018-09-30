@@ -59,8 +59,10 @@ export class DevicePage {
 
     reboot() {
         this.fltunit.reboot();
-        this.navCtrl.push(HomePage);
-        this.navCtrl.parent.select(0);
+        setTimeout(() => {
+            this.navCtrl.push(HomePage);
+            this.navCtrl.parent.select(0);
+        }, 500);
     }
 
     saveData() {

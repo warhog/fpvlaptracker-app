@@ -204,7 +204,7 @@ export class FltunitProvider {
         let me = this;
         this.simpleRequest("REBOOT").then(function() {
             me.disconnect();
-            me.fltutil.showToast("Rebooting unit, this may take up to 30 seconds.");
+            me.fltutil.showToast("Rebooting unit, this may take up to 30 seconds.", 3000);
         }).catch(function (errMsg) {
             me.fltutil.showToast("Cannot reboot unit: " + errMsg);
         });
