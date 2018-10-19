@@ -4,6 +4,7 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {ToastController} from 'ionic-angular';
 import {DevicePage} from '../device/device';
 import {Storage} from '@ionic/storage';
+import { FltunitProvider } from '../../providers/fltunit/fltunit';
 
 @Component({
     selector: 'page-bluetooth',
@@ -18,11 +19,8 @@ export class BluetoothPage {
     itemSelected(item) {
         this.storage.set("bluetooth.id", item.id);
         this.storage.set("bluetooth.name", item.name);
-        this.navCtrl.push(DevicePage, {
-            id: item.id,
-            name: item.name
-        });
-        this.navCtrl.parent.select(1);
+        this.fltunit.disconnect();
+        this.navCtrl.pop();
     }
 
     reload() {
@@ -53,7 +51,11 @@ export class BluetoothPage {
         });
     }
 
-    constructor(private storage: Storage, public toastCtrl: ToastController, public navCtrl: NavController, private bluetoothSerial: BluetoothSerial) {
+    constructor(private storage: Storage,
+        public toastCtrl: ToastController,
+        public navCtrl: NavController,
+        private bluetoothSerial: BluetoothSerial,
+        private fltunit: FltunitProvider) {
         this.loadBluetoothDevices();
     }
 

@@ -92,8 +92,6 @@ export class RacePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
-        this.navCtrl.parent.select(3);
-        this.fltunit.disconnect();
     }
 
     showToast(errMsg: string) {
@@ -151,23 +149,20 @@ export class RacePage {
         return this.raceState == RACESTATE.WAITING;
     }
 
-    doConnect() {
-        let me = this;
-        this.fltunit.connect().then(() => {
-            me.subscribe();
-        }).catch(function (errMsg: string) {
-            me.fltutil.showToast(errMsg);
-            me.gotoSettings();
+    ionViewDidEnter() {
+        this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
+            if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
+                keepAwakeDuringRace = false;
+            }
+            if (keepAwakeDuringRace) {
+                this.insomnia.keepAwake().then(() => {}, () => {
+                    this.showToast("cannot disable sleep mode");
+                });
+            }
         });
-    }
 
-    subscribe() {
         let me = this;
-        this.fltunit.isConnected().catch(() => {
-            me.fltutil.showToast('Not connected');
-            me.fltutil.hideLoader();
-            me.navCtrl.pop();
-        }).then(() => {
+        this.fltunit.connectIfNotConnected().then(() => {
             this.fltunit.getObservable().subscribe(data => {
                 me.fltutil.hideLoader();
                 if (LapData.isLapData(data)) {
@@ -214,27 +209,14 @@ export class RacePage {
                 } else if (MessageData.isMessageData(data)) {
                     me.fltutil.showToast(data.message);
                 }
-            });
-        });
-    }
-
-    ionViewDidEnter() {
-        this.doConnect();
-
-        this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
-            if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
-                keepAwakeDuringRace = false;
-            }
-            if (keepAwakeDuringRace) {
-                this.insomnia.keepAwake().then(() => {}, () => {
-                    this.showToast("cannot disable sleep mode");
-                });
-            }
+            })
+        }).catch(function (errMsg: string) {
+            me.fltutil.showToast(errMsg);
+            me.gotoSettings();
         });
     }
 
     ionViewWillLeave() {
-        this.fltunit.disconnect();
         this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
             if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
                 keepAwakeDuringRace = false;

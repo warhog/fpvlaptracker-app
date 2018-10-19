@@ -61,7 +61,6 @@ export class DevicePage {
         this.fltunit.reboot();
         setTimeout(() => {
             this.navCtrl.push(HomePage);
-            this.navCtrl.parent.select(0);
         }, 500);
     }
 
@@ -71,20 +70,14 @@ export class DevicePage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
-        this.navCtrl.parent.select(3);
-        this.fltunit.disconnect();
     }
 
     gotoHelp() {
         this.navCtrl.push(HelpPage);
-        this.navCtrl.parent.select(1);
-        this.fltunit.disconnect();
     }
 
     gotoFastRssi() {
         this.navCtrl.push(FastrssiPage);
-        this.navCtrl.parent.select(1);
-        this.fltunit.disconnect();
     }
     
     requestData() {
@@ -96,55 +89,8 @@ export class DevicePage {
         });
     }
 
-    doConnect() {
-        let me = this;
-        this.fltunit.connect().then(function() {
-            me.deviceName = me.fltunit.getDeviceName();
-            me.subscribe();
-        }).catch(function (errMsg: string) {
-            me.fltutil.showToast(errMsg);
-            me.gotoSettings();
-        });
-    }
-
     gotoScanner() {
         this.navCtrl.push(ScannerPage);
-        this.navCtrl.parent.select(1);
-        this.fltunit.disconnect();
-    }
-
-    subscribe() {
-        let me = this;
-        this.fltunit.isConnected().catch(() => {
-            me.fltutil.showToast('Not connected');
-            me.fltutil.hideLoader();
-            me.navCtrl.pop();
-        }).then(() => {
-            this.fltunit.getObservable().subscribe(data => {
-                me.fltutil.hideLoader();
-                if (DeviceData.isDeviceData(data)) {
-                    if (data.voltage > 7 && data.voltage <= 10) {
-                        me.cells = 2;
-                    } else if (data.voltage > 10 && data.voltage <= 13) {
-                        me.cells = 3;
-                    } else if (data.voltage > 13 && data.voltage <= 17) {
-                        me.cells = 4;
-                    } else if (data.voltage > 17 && data.voltage <= 21.5) {
-                        me.cells = 5;
-                    } else if (data.voltage > 21.5 && data.voltage <= 26) {
-                        me.cells = 6;
-                    }
-                    me.zone.run(() => {
-                        me.deviceData = data;
-                    });
-                } else if (MessageData.isMessageData(data)) {
-                    me.fltutil.showToast(data.message);
-                    if (data.reboot !== undefined && data.reboot == true) {
-                        me.reboot();
-                    }
-                }
-            });
-        });
     }
 
     loadProfiles() {
@@ -325,11 +271,41 @@ export class DevicePage {
     }
 
     ionViewDidEnter() {
-        this.doConnect();
+        let me = this;
+        this.fltunit.connectIfNotConnected().then(() => {
+            me.deviceName = me.fltunit.getDeviceName();
+            this.fltunit.getObservable().subscribe(data => {
+                me.fltutil.hideLoader();
+                if (DeviceData.isDeviceData(data)) {
+                    if (data.voltage > 7 && data.voltage <= 10) {
+                        me.cells = 2;
+                    } else if (data.voltage > 10 && data.voltage <= 13) {
+                        me.cells = 3;
+                    } else if (data.voltage > 13 && data.voltage <= 17) {
+                        me.cells = 4;
+                    } else if (data.voltage > 17 && data.voltage <= 21.5) {
+                        me.cells = 5;
+                    } else if (data.voltage > 21.5 && data.voltage <= 26) {
+                        me.cells = 6;
+                    }
+                    me.zone.run(() => {
+                        me.deviceData = data;
+                    });
+                } else if (MessageData.isMessageData(data)) {
+                    me.fltutil.showToast(data.message);
+                    if (data.reboot !== undefined && data.reboot == true) {
+                        me.reboot();
+                    }
+                }
+            });
+        }).catch(function (errMsg: string) {
+            me.fltutil.showToast(errMsg);
+            me.gotoSettings();
+        });
     }
 
     ionViewWillLeave() {
-        this.fltunit.disconnect();
+
     }
 
     ionViewWillEnter() {

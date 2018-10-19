@@ -43,43 +43,30 @@ export class FastrssiPage {
 
     gotoSettings() {
         this.navCtrl.push(BluetoothPage);
-        this.navCtrl.parent.select(3);
-        this.fltunit.disconnect();
-    }
-
-    doConnect() {
-        let me = this;
-        this.fltunit.connect().then(() => {
-            me.subscribe();
-        }).catch(function (errMsg: string) {
-            me.fltutil.showToast(errMsg);
-            me.gotoSettings();
-        });
-    }
-
-    subscribe() {
-        let me = this;
-        this.fltunit.getObservable().subscribe(data => {
-            me.fltutil.hideLoader();
-            if (MessageData.isMessageData(data)) {
-                me.fltutil.showToast(data.message);
-            } else if (RssiData.isRssiData(data)) {
-                me.zone.run(() => {
-                    if (data.rssi == NaN) {
-                        data.rssi = 0;
-                    }
-                    me.rssi = data.rssi;
-                });
-            }
-        });
     }
 
     ionViewDidEnter() {
-        this.doConnect();
-    }
+        let me = this;
+        this.fltunit.connectIfNotConnected().then(() => {
+            this.fltunit.getObservable().subscribe(data => {
+                me.fltutil.hideLoader();
+                if (MessageData.isMessageData(data)) {
+                    me.fltutil.showToast(data.message);
+                } else if (RssiData.isRssiData(data)) {
+                    me.zone.run(() => {
+                        if (data.rssi == NaN) {
+                            data.rssi = 0;
+                        }
+                        me.rssi = data.rssi;
+                    });
+                }
+            });
+        }).catch(function (errMsg: string) {
+            me.fltutil.showToast(errMsg);
+            me.gotoSettings();
+        });    }
 
     ionViewWillLeave() {
         this.stopFastRssi();
-        this.fltunit.disconnect();
     }
 }

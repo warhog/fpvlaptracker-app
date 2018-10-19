@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/map';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {FltutilProvider} from '../fltutil/fltutil'
 import {Observable} from 'rxjs/Observable';
@@ -14,6 +13,7 @@ import { SmartAudioProvider } from '../smart-audio/smart-audio';
 import { getDataType } from '../../models/type';
 import { VersionData } from '../../models/versiondata';
 import { AlarmData } from '../../models/alarmdata';
+import { resolveDefinition } from '@angular/core/src/view/util';
 
 enum FLT_UNIT_STATES {
     DISCONNECTED = 0,
@@ -94,23 +94,38 @@ export class FltunitProvider {
         return this.bluetoothSerial.isConnected();
     }
 
+    connectIfNotConnected() : Promise<any> {
+        let me = this;
+        return new Promise((resolve, reject) => {
+            this.isConnected().then(() => {
+                resolve();
+            }).catch(() => {
+                me.connect().then((data) => {
+                    resolve();
+                }).catch((errMsg: string) => {
+                    reject(errMsg);
+                })
+            });
+        });
+    }
+
     connect() : Promise<string> {
         let me = this;
-        this.isConnected().catch(() => {
+        this.isConnected().then(() => {
             this.disconnect();
         });
         return new Promise((resolve, reject) => {
-            let id2 = null;
-            me.storage.get("bluetooth.id").then((id: string) => {
-                id2 = id;
-                if (id === null) {
+            let bluetoothIdToConnectTo = null;
+            me.storage.get("bluetooth.id").then((bluetoothId: string) => {
+                if (bluetoothId === null) {
                     reject("No tracker selected.");
                 }
+                bluetoothIdToConnectTo = bluetoothId;
                 return me.storage.get("bluetooth.name");
             }).then((name: string) => {
                 me.deviceName = name;
                 me.fltutil.showLoader("Connecting to " + name + ", please wait...");
-                me.bluetoothSerial.connect(id2).subscribe((data) => {
+                me.bluetoothSerial.connect(bluetoothIdToConnectTo).subscribe((data) => {
                     me.fltutil.hideLoader();
                     me.state = FLT_UNIT_STATES.CONNECTED;
                     me.bluetoothSerial.subscribe("\n").subscribe((data) => {

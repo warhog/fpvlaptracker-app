@@ -14,17 +14,21 @@ export class SettingsPage {
     private numberOfLaps: number = 10;
     private keepAwakeDuringRace: boolean = false;
 
-    constructor(private storage: Storage, public navCtrl: NavController) {
-        storage.get("bluetooth.name").then((name: string) => {
+    constructor(public storage: Storage, public navCtrl: NavController) {
+
+    }
+
+    ionViewDidEnter() {
+        this.storage.get("bluetooth.name").then((name: string) => {
             this.bluetoothDevice = name;
         });
-        storage.get("race.numberOfLaps").then((numberOfLaps: number) => {
+        this.storage.get("race.numberOfLaps").then((numberOfLaps: number) => {
             if (numberOfLaps == undefined || numberOfLaps == null || numberOfLaps == 0) {
                 numberOfLaps = 10;
             }
             this.numberOfLaps = numberOfLaps;
         });
-        storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
+        this.storage.get("race.keepAwakeDuringRace").then((keepAwakeDuringRace: boolean) => {
             if (keepAwakeDuringRace == undefined || keepAwakeDuringRace == null) {
                 keepAwakeDuringRace = false;
             }
@@ -34,7 +38,6 @@ export class SettingsPage {
 
     gotoBluetoothSelection() {
         this.navCtrl.push(BluetoothPage);
-        this.navCtrl.parent.select(3);
     }
 
     saveValues() {
