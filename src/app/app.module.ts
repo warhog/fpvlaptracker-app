@@ -19,6 +19,8 @@ import {SplashScreen} from '@ionic-native/splash-screen';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial';
 import {IonicStorageModule} from '@ionic/storage';
 import {SmartAudioProvider} from '../providers/smart-audio/smart-audio';
+import {SpeechProvider} from '../providers/speech/speech'
+import {TextToSpeech} from '@ionic-native/text-to-speech'
 import {NativeAudio} from '@ionic-native/native-audio';
 import {Insomnia} from '@ionic-native/insomnia';
 import {FltutilProvider} from '../providers/fltutil/fltutil';
@@ -64,6 +66,8 @@ import { HelpPage } from '../pages/help/help';
         {provide: ErrorHandler, useClass: IonicErrorHandler},
         NativeAudio,
         SmartAudioProvider,
+        TextToSpeech,
+        SpeechProvider,
         Insomnia,
         FltutilProvider,
         FltunitProvider,

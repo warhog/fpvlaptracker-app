@@ -6,6 +6,7 @@ import {Storage} from '@ionic/storage';
 import {BluetoothPage} from '../bluetooth/bluetooth';
 import {LoadingController} from 'ionic-angular';
 import {SmartAudioProvider} from '../../providers/smart-audio/smart-audio';
+import {SpeechProvider} from '../../providers/speech/speech'
 import {NgZone} from '@angular/core';
 import {Insomnia} from '@ionic-native/insomnia';
 import * as LapData from '../../models/lapdata'
@@ -45,7 +46,8 @@ export class RacePage {
         private insomnia: Insomnia,
         private fltutil: FltutilProvider,
         private fltunit: FltunitProvider,
-        private viewCtrl: ViewController
+        private viewCtrl: ViewController,
+        private speech: SpeechProvider
         ) {
         this.restartRace();
         this.setRaceState(RACESTATE.STOP);
@@ -156,7 +158,7 @@ export class RacePage {
             }
             if (keepAwakeDuringRace) {
                 this.insomnia.keepAwake().then(() => {}, () => {
-                    this.showToast("cannot disable sleep mode");
+                    this.showToast('Cannot disable sleep mode');
                 });
             }
         });
@@ -171,11 +173,11 @@ export class RacePage {
                             this.currentLap++;
                         });
                         this.setRaceState(RACESTATE.RUNNING);
-                        this.smartAudio.play('lap');
+                        this.speech.speak('Race started.');
                     } else if (this.isRaceRunning()) {
                         if (this.currentLap >= this.maxLaps) {
-                            this.smartAudio.play('finished');
-                            this.showToast("Race ended, max. number of laps reached");
+                            this.speech.speak('Race finished.');
+                            this.showToast('Race ended, max. number of laps reached.');
                             this.setRaceState(RACESTATE.STOP);
                         }
                         this.zone.run(() => {
@@ -208,6 +210,7 @@ export class RacePage {
                     }
                 } else if (MessageData.isMessageData(data)) {
                     me.fltutil.showToast(data.message);
+                    this.speech.speak(data.message);
                 }
             })
         }).catch(function (errMsg: string) {

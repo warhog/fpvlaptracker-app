@@ -9,7 +9,7 @@ import {RssiData} from '../../models/rssidata'
 import {MessageData} from '../../models/messagedata'
 import {ScanData} from '../../models/scandata';
 import {LapData} from '../../models/lapdata';
-import { SmartAudioProvider } from '../smart-audio/smart-audio';
+import {SpeechProvider} from '../speech/speech'
 import { getDataType } from '../../models/type';
 import { VersionData } from '../../models/versiondata';
 import { AlarmData } from '../../models/alarmdata';
@@ -44,7 +44,7 @@ export class FltunitProvider {
         private bluetoothSerial: BluetoothSerial,
         private fltutil: FltutilProvider,
         private storage: Storage,
-        private smartAudioProvider: SmartAudioProvider
+        private speech: SpeechProvider
         ) {
         this.observable = Observable.create(observer => {
             this.observer = observer;
@@ -256,7 +256,7 @@ export class FltunitProvider {
                 }
                 if (isStateCalibrationData(stateData)) {
                     this.fltutil.showToast("Calibration done", 3000);
-                    this.smartAudioProvider.play("calibrationdone");
+                    this.speech.speak('Calibration done.');
                     this.loadDeviceData();
                 }
                 if (!isStateScanData(stateData) && !isStateRssiData(stateData) && !isStateCalibrationData(stateData)) {

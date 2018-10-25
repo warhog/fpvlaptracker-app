@@ -19,8 +19,6 @@ export class FpvlaptrackerApp {
             statusBar.styleDefault();
 
             smartAudio.preload('lap', 'assets/audio/lap.mp3');
-            smartAudio.preload('finished', 'assets/audio/finished.mp3');
-            smartAudio.preload('calibrationdone', 'assets/audio/calibrationdone.mp3');
 
             splashScreen.hide();
         });
