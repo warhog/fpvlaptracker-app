@@ -274,7 +274,7 @@ export class DevicePage {
         let me = this;
         this.fltunit.connectIfNotConnected().then(() => {
             me.deviceName = me.fltunit.getDeviceName();
-            this.fltunit.getObservable().subscribe(data => {
+            me.fltunit.getObservable().subscribe(data => {
                 me.fltutil.hideLoader();
                 if (DeviceData.isDeviceData(data)) {
                     if (data.voltage > 7 && data.voltage <= 10) {
@@ -298,6 +298,7 @@ export class DevicePage {
                     }
                 }
             });
+            me.requestData();
         }).catch(function (errMsg: string) {
             me.fltutil.showToast(errMsg);
             me.gotoSettings();
