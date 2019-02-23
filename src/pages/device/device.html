@@ -172,7 +172,7 @@
                 <h3 style="padding-top: 5px;">Filter ratio</h3>
                 <div>The filter ratio for smoothing the RSSI signal. 0 = only old values, 1 = only new values.</div>
             </ion-label>
-            <ion-input type="number" min="0" max="1" step="0.001" value="" [(ngModel)]="deviceData.filterRatio"></ion-input>
+            <ion-input type="number" min="0.01" max="0.99" step="0.01" value="" [(ngModel)]="deviceData.filterRatio"></ion-input>
         </ion-item>
 
         <ion-item text-wrap>
@@ -180,7 +180,7 @@
                 <h3 style="padding-top: 5px;">Filter ratio <b>calibration</b></h3>
                 <div>The filter ratio for smoothing the RSSI signal during calibration. 0 = only old values, 1 = only new values.</div>
             </ion-label>
-            <ion-input type="number" min="0" max="1" step="0.001" value="" [(ngModel)]="deviceData.filterRatioCalibration"></ion-input>
+            <ion-input type="number" min="0.001" max="0.99" step="0.001" value="" [(ngModel)]="deviceData.filterRatioCalibration"></ion-input>
         </ion-item>
 
     </ion-list>

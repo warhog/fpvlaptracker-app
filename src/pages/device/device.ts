@@ -114,7 +114,7 @@ export class DevicePage {
             "triggerThresholdCalibration": 120,
             "calibrationOffset": 10,
             "filterRatio": 0.05,
-            "filterRatioCalibration": 0.001
+            "filterRatioCalibration": 0.005
         };
     }
 
